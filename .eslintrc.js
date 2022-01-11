@@ -1,0 +1,40 @@
+module.exports = {
+    env: {
+        browser: true,
+        es2021: true,
+    },
+    extends: [
+        'plugin:react/recommended',
+        'plugin:prettier/recommended',
+        'plugin:react-hooks/recommended',
+        'plugin:import/errors',
+        'plugin:import/warnings',
+    ],
+    parserOptions: {
+        ecmaFeatures: {
+            jsx: true,
+        },
+        ecmaVersion: 12,
+        sourceType: 'module',
+    },
+    plugins: ['react'],
+    rules: {
+        'prettier/prettier': 'error',
+        'no-console': 'warn',
+        'no-eval': 'warn',
+        'no-proto': 2,
+        'react/display-name': 'off',
+        'react/prop-types': 'off',
+        'import/no-named-as-default-member': 0,
+        'import/no-named-as-default': 0,
+        'import/named': 0,
+        'import/export': 0,
+        'import/default': 0,
+        'import/namespace': 0,
+        'import/no-cycle': 'error',
+        'import/no-duplicates': 'error',
+        'react/jsx-uses-react': 'off',
+        'react/react-in-jsx-scope': 'off',
+        'react-hooks/exhaustive-deps': 'error',
+    },
+};
