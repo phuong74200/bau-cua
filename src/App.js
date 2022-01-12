@@ -1,11 +1,12 @@
 import React from 'react';
 
-import { Login } from './component';
+import { Login, Room } from './component';
+import { RouterComponents } from './routers';
 
 function App() {
     return (
         <div>
-            <Login />
+            <RouterComponents />
         </div>
     );
 }
