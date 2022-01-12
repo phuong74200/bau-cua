@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { BsFillHandIndexFill } from 'react-icons/bs';
+
 import * as Styled from './index.style';
 
 function ButtonLogin() {
@@ -23,6 +25,9 @@ function ButtonLogin() {
                 </Styled.Confetti>
             </Styled.Icon>
             <span>Đăng nhập với tài khoản Google</span>
+            <Styled.FocusButton>
+                <BsFillHandIndexFill />
+            </Styled.FocusButton>
         </Styled.ButtonLogin>
     );
 }

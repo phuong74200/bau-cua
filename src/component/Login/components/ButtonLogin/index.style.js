@@ -1,7 +1,7 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 export const ButtonLogin = styled.button`
-    --background: #dc143c;
+    --background: linear-gradient(45deg, #e63a0a, #ca0705);
     --color: #f6f8ff;
     --shadow: #{rgba(#00093d, 0.24)};
     --cannon-dark: #a6accd;
@@ -21,8 +21,8 @@ export const ButtonLogin = styled.button`
     padding: 9px 22px 9px 16px;
     line-height: 26px;
     font-family: inherit;
-    font-weight: 600;
-    font-size: 14px;
+    font-weight: 400;
+    font-size: 1.6rem;
     color: var(--color);
     -webkit-appearance: none;
     -webkit-tap-highlight-color: transparent;
@@ -33,6 +33,7 @@ export const ButtonLogin = styled.button`
         rotateY(calc(var(--ry, 0) * 1deg)) translateZ(0);
     &:hover {
         --transform-duration: 0.16s;
+        text-decoration: underline;
     }
     &.success {
         --confetti-scale: 0;
@@ -180,5 +181,25 @@ export const Cannon = styled.div`
         border-radius: 50%;
         box-shadow: inset 0 0 0 0.5px var(--cannon-light);
         background: linear-gradient(90deg, var(--cannon-dark), var(--cannon-light));
+    }
+`;
+
+const onMove = keyframes`
+    25%{top: 40%}
+    50%{top: 55%}
+    75%{top: 45%}
+    100%{top: 50%}
+`;
+
+export const FocusButton = styled.div`
+    position: absolute;
+    left: 50%;
+    top: 50%;
+
+    & > svg {
+        color: gray;
+        font-size: 25px;
+        animation: ${onMove} 0.5s none ease-in-out infinite;
+        transform: translate(-50%, 50%);
     }
 `;

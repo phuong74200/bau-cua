@@ -1,41 +1,41 @@
 import styled, { keyframes } from 'styled-components';
 
 const animate = keyframes` 
-  20%{
-    transform: rotateX(45deg) rotateY(65deg) rotateZ(35deg);
+  25%{
+    transform: rotateX(45deg) rotateY(-45deg) rotateZ(-45deg);
+    top: -200%;
+  }
+  50%{
+    transform: rotateX(145deg) rotateY(-145deg) rotateZ(145deg);
+    top: 100%;
+  }
+
+  75% {
     top: 0%;
   }
-  40%{
-    transform: rotateX(45deg) rotateY(65deg) rotateZ(135deg);
-    top: 30%;
-  }
-  60%{
-    transform: rotateX(76deg) rotateY(56deg) rotateZ(246deg);
-    top: 35%;
-  }
-  90% {
-    transform: rotateX(180deg) rotateY(-80deg) rotateZ(-50deg);
-    top: 40%;
+  100% {
+    top: 100%;
   }
   `;
-const animate2 = keyframes` 
-  20%{
-    transform: rotateX(-45deg) rotateY(-65deg) rotateZ(35deg);
-    top: 0%;
-  }
-  40%{
-    transform: rotateX(-145deg) rotateY(-165deg) rotateZ(135deg);
-    top: 30%;
-  }
-  60%{
-    transform: rotateX(-276deg) rotateY(-256deg) rotateZ(246deg);
-    top: 35%;
-  }
-  90% {
-    transform: rotateX(-180deg) rotateY(80deg) rotateZ(-50deg);
-    top: 40%;
-  }
-  `;
+
+// const animate = keyframes`
+// 20%{
+//   transform: rotateX(45deg) rotateY(65deg) rotateZ(35deg);
+//   top: -200%;
+// }
+// 40%{
+//   transform: rotateX(45deg) rotateY(65deg) rotateZ(135deg);
+//   top: -50%;
+// }
+// 60%{
+//   transform: rotateX(76deg) rotateY(56deg) rotateZ(246deg);
+//   top: 0%;
+// }
+// 100% {
+//   transform: rotateX(180deg) rotateY(-80deg) rotateZ(-50deg);
+//   top: 100%;
+// }
+// `;
 
 export const Container = styled.div`
     display: flex;
@@ -52,13 +52,14 @@ export const Cube = styled.div`
     height: 50px;
     width: 50px;
     transform-style: preserve-3d;
-    cursor: pointer;
     transform: rotateX(135deg) rotateY(-217deg) rotateZ(-88deg);
-    animation: ${animate} 3s linear;
+    animation: ${animate} 2.5s linear;
 
     & div {
         position: absolute;
         box-sizing: border-box;
+        background-size: cover;
+
         padding: 10px;
         height: 100%;
         width: 100%;

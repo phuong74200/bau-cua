@@ -1,31 +1,53 @@
 import styled from 'styled-components';
 
 export const Login = styled.div`
-    height: 80vh;
+    height: auto;
+    width: 100%;
+    aspect-ratio: 3/2;
+    background-size: cover;
+    background-repeat: no-repeat;
 `;
 
 export const LoginMain = styled.div`
+    position: fixed;
+    top: 0;
     width: 100%;
     height: 100%;
+
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-evenly;
 `;
 
 export const BannerLeft = styled.div`
     position: fixed;
     top: 0;
     left: 0;
-
+    bottom: 0;
     text-align: left;
+
+    & > div {
+        position: relative;
+        height: fit-content;
+        width: fit-content;
+    }
+
+    img:first-child {
+        height: 90vh;
+        width: auto;
+    }
 `;
 export const BannerRight = styled.div`
     position: fixed;
     top: 0;
     right: 0;
-
     text-align: right;
+
+    & > img:first-child {
+        height: 90vh;
+        width: auto;
+    }
 `;
 export const BannerBottom = styled.div`
     position: fixed;
