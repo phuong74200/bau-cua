@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, { useEffect } from 'react';
 
 import { useNavigate } from 'react-router-dom';
@@ -8,13 +9,10 @@ import ga from '../../assets/images/3-ga.jpg';
 import tom from '../../assets/images/4-tom.jpg';
 import ca from '../../assets/images/5-ca.jpg';
 import cua from '../../assets/images/6-cua.jpg';
-import logoFpt from '../../assets/images/Logo_Đại_học_FPT.png';
 import bannerBottom from '../../assets/images/banner_bottom.png';
 import bannerLeft from '../../assets/images/banner_left.png';
 import bannerRight from '../../assets/images/banner_right.png';
 import baucua from '../../assets/images/baucua.jpg';
-import happyNewYear from '../../assets/images/happynewyear.png';
-import logoFcode from '../../assets/images/logo_fcode.png';
 import background_banner_bottom from '../../assets/images/nentet.png';
 import authApi from '../../services/api/authApi';
 import firebase, { PopupGoogleLogin } from '../../services/authentication/';
