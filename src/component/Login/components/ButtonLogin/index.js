@@ -25,9 +25,6 @@ function ButtonLogin() {
                 </Styled.Confetti>
             </Styled.Icon>
             <span>Đăng nhập với tài khoản Google</span>
-            <Styled.FocusButton>
-                <BsFillHandIndexFill />
-            </Styled.FocusButton>
         </Styled.ButtonLogin>
     );
 }

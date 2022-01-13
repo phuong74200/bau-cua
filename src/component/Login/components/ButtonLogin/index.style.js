@@ -1,5 +1,22 @@
 import styled, { keyframes } from 'styled-components';
 
+const moveDown = keyframes`
+    0% {
+      opacity: 0;
+      transform: translateY(-10%);
+    }
+  
+    75% {
+      opacity: 0.5;
+      transform: translateY(10%);
+    }
+  
+    100% {
+      opacity: 1;
+      transform: translateY(0px); 
+    }
+  `;
+
 export const ButtonLogin = styled.button`
     --background: linear-gradient(45deg, #e63a0a, #ca0705);
     --color: #f6f8ff;
@@ -51,6 +68,8 @@ export const ButtonLogin = styled.button`
         background: var(--background);
         box-shadow: 0 4px 8px var(--shadow);
     }
+
+    animation: ${moveDown} 0.5s ease-out;
 `;
 
 export const Icon = styled.div`
@@ -181,25 +200,5 @@ export const Cannon = styled.div`
         border-radius: 50%;
         box-shadow: inset 0 0 0 0.5px var(--cannon-light);
         background: linear-gradient(90deg, var(--cannon-dark), var(--cannon-light));
-    }
-`;
-
-const onMove = keyframes`
-    25%{top: 40%}
-    50%{top: 55%}
-    75%{top: 45%}
-    100%{top: 50%}
-`;
-
-export const FocusButton = styled.div`
-    position: absolute;
-    left: 50%;
-    top: 50%;
-
-    & > svg {
-        color: gray;
-        font-size: 25px;
-        animation: ${onMove} 0.5s none ease-in-out infinite;
-        transform: translate(-50%, 50%);
     }
 `;

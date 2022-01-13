@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 
+import { useNavigate } from 'react-router-dom';
+
 import cop from '../../assets/images/1-cop.jpg';
 import bau from '../../assets/images/2-bau.jpg';
 import ga from '../../assets/images/3-ga.jpg';
@@ -14,11 +16,44 @@ import baucua from '../../assets/images/baucua.jpg';
 import happyNewYear from '../../assets/images/happynewyear.png';
 import logoFcode from '../../assets/images/logo_fcode.png';
 import background_banner_bottom from '../../assets/images/nentet.png';
+import authApi from '../../services/api/authApi';
+import firebase, { PopupGoogleLogin } from '../../services/authentication/';
 import ButtonLogin from './components/ButtonLogin';
 import Dice from './components/Dice';
 import * as Styled from './index.style.js';
 
 const Login = () => {
+    let navigate = useNavigate();
+
+    const onOAuthSuccess = async (OAuthToken, type = 'firebase') => {
+        try {
+            let result = await authApi.getToken(OAuthToken, type);
+            localStorage.setItem('token', result.data.token);
+            //updateIns();
+            console.log(result.data.token);
+            navigate('/room');
+        } catch (error) {
+            console.log(error);
+            Error('Something wrongs');
+        } finally {
+            //set Loading
+        }
+    };
+
+    const onFirebaseLoginSuccess = async (result) => {
+        onOAuthSuccess(await result.user.getIdToken(true));
+    };
+
+    const handleBtnLogin = (type) => {
+        return (event) => {
+            PopupGoogleLogin()
+                .then(onFirebaseLoginSuccess)
+                .catch((ex) => {
+                    Error('Login failed, please try again!');
+                });
+        };
+    };
+
     return (
         <Styled.Login style={{ backgroundImage: `url(${baucua})` }}>
             <Styled.BannerLeft>
