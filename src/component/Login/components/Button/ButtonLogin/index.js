@@ -4,9 +4,9 @@ import { BsFillHandIndexFill } from 'react-icons/bs';
 
 import * as Styled from './index.style';
 
-function ButtonLogin() {
+function ButtonLogin({ handleClick = () => {} }) {
     return (
-        <Styled.ButtonLogin>
+        <Styled.ButtonLogin onClick={handleClick}>
             <Styled.Icon>
                 <Styled.Cannon></Styled.Cannon>
                 <Styled.Confetti>

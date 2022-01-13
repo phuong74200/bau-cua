@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useNavigate } from 'react-router-dom';
 
@@ -14,20 +14,25 @@ import bannerLeft from '../../assets/images/banner_left.png';
 import bannerRight from '../../assets/images/banner_right.png';
 import baucua from '../../assets/images/baucua.jpg';
 import background_banner_bottom from '../../assets/images/nentet.png';
+import useDialog from '../../hooks/useDialog';
 import authApi from '../../services/api/authApi';
 import firebase, { PopupGoogleLogin } from '../../services/authentication/';
-import ButtonLogin from './components/ButtonLogin';
+import { updateIns } from '../../utils/apiCaller';
+import ButtonBase from './components/Button/ButtonBase';
+import ButtonLogin from './components/Button/ButtonLogin';
+import Dialog from './components/Dialog';
 import Dice from './components/Dice';
 import * as Styled from './index.style.js';
 
 const Login = () => {
     let navigate = useNavigate();
+    const [isShowing, toggle, openDialog, closeDialog] = useDialog(false);
 
     const onOAuthSuccess = async (OAuthToken, type = 'firebase') => {
         try {
             let result = await authApi.getToken(OAuthToken, type);
             localStorage.setItem('token', result.data.token);
-            //updateIns();
+            updateIns();
             console.log(result.data.token);
             navigate('/room');
         } catch (error) {
@@ -52,6 +57,8 @@ const Login = () => {
         };
     };
 
+    const handleOpenDialog = () => {};
+
     return (
         <Styled.Login style={{ backgroundImage: `url(${baucua})` }}>
             <Styled.BannerLeft>
@@ -65,9 +72,25 @@ const Login = () => {
                 <div style={{ backgroundImage: `url(${bannerBottom})` }}></div>
             </Styled.BannerBottom>
             <Styled.LoginMain>
-                <Styled.ButtonLoginWrapper>
-                    <ButtonLogin />
-                </Styled.ButtonLoginWrapper>
+                {/* <Styled.ButtonLoginWrapper>
+                    <ButtonLogin handleClick={openDialog} />
+                </Styled.ButtonLoginWrapper> */}
+
+                <ButtonBase
+                    width="300px"
+                    padding="20px"
+                    background_color="#e63a0a"
+                    text_color="white"
+                    animation={true}
+                >
+                    Đăng nhập với tài khoản google
+                </ButtonBase>
+
+                <Dialog title="Post" isShowing={isShowing} hide={closeDialog}>
+                    <div>
+                        <h1>This is my dialog</h1>
+                    </div>
+                </Dialog>
                 <Styled.DiceWrapper>
                     <Dice front={ga} back={ca} top={tom} left={bau} right={cop} bottom={cua} />
                     <Dice front={ga} back={ca} top={tom} left={cua} right={cop} bottom={bau} />

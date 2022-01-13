@@ -34,7 +34,7 @@ export const BannerLeft = styled.div`
     }
 
     img:first-child {
-        height: 90vh;
+        height: 80vh;
         width: auto;
     }
 `;
@@ -45,7 +45,7 @@ export const BannerRight = styled.div`
     text-align: right;
 
     & > img:first-child {
-        height: 90vh;
+        height: 80vh;
         width: auto;
     }
 `;
