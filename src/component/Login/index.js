@@ -1,7 +1,10 @@
 /* eslint-disable no-console */
 import React, { useEffect, useState } from 'react';
 
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { down } from 'styled-breakpoints';
+import { useBreakpoint } from 'styled-breakpoints/react-styled';
 
 import cop from '../../assets/images/1-cop.jpg';
 import bau from '../../assets/images/2-bau.jpg';
@@ -23,21 +26,25 @@ import ButtonLogin from './components/Button/ButtonLogin';
 import Dialog from './components/Dialog';
 import Dice from './components/Dice';
 import * as Styled from './index.style.js';
+import { login } from './loginSlice';
 
 const Login = () => {
+    const isMobile = useBreakpoint(down('sm'));
     let navigate = useNavigate();
+    let dispatch = useDispatch();
     const [isShowing, toggle, openDialog, closeDialog] = useDialog(false);
 
     const onOAuthSuccess = async (OAuthToken, type = 'firebase') => {
         try {
-            let result = await authApi.getToken(OAuthToken, type);
-            localStorage.setItem('token', result.data.token);
+            console.log(OAuthToken);
+            localStorage.setItem('token', OAuthToken);
             updateIns();
-            console.log(result.data.token);
+            let result = await authApi.getUser(OAuthToken, type);
+            dispatch(login());
             navigate('/room');
         } catch (error) {
             console.log(error);
-            Error('Something wrongs');
+            console.log('Lỗi rồi');
         } finally {
             //set Loading
         }
@@ -45,9 +52,10 @@ const Login = () => {
 
     const onFirebaseLoginSuccess = async (result) => {
         onOAuthSuccess(await result.user.getIdToken(true));
+        console.log('firebase: ', result.user);
     };
 
-    const handleBtnLogin = (type) => {
+    const handleBtnLogin = () => {
         return (event) => {
             PopupGoogleLogin()
                 .then(onFirebaseLoginSuccess)
@@ -56,8 +64,6 @@ const Login = () => {
                 });
         };
     };
-
-    const handleOpenDialog = () => {};
 
     return (
         <Styled.Login style={{ backgroundImage: `url(${baucua})` }}>
@@ -77,20 +83,16 @@ const Login = () => {
                 </Styled.ButtonLoginWrapper> */}
 
                 <ButtonBase
-                    width="300px"
-                    padding="20px"
+                    width={isMobile ? '160px' : '300px'}
+                    padding={isMobile ? '8px' : '16px'}
                     background_color="#e63a0a"
                     text_color="white"
+                    border="1px solid #fff"
                     animation={true}
+                    onClick={handleBtnLogin()}
                 >
-                    Đăng nhập với tài khoản google
+                    {isMobile ? 'Đăng nhập' : 'Đăng nhập với tài khoản Google'}
                 </ButtonBase>
-
-                <Dialog title="Post" isShowing={isShowing} hide={closeDialog}>
-                    <div>
-                        <h1>This is my dialog</h1>
-                    </div>
-                </Dialog>
                 <Styled.DiceWrapper>
                     <Dice front={ga} back={ca} top={tom} left={bau} right={cop} bottom={cua} />
                     <Dice front={ga} back={ca} top={tom} left={cua} right={cop} bottom={bau} />

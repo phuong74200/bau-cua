@@ -34,7 +34,7 @@ export const RouterComponents = () => {
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<Navigate to="/room" />} />
+                <Route exact path="/" element={<Navigate to="/room" />} />
                 <Route exact path="/" element={<PrivateRouters />}>
                     {privateRouters.map((route) => (
                         <Route
