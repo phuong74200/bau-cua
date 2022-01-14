@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 
 import { Login, Room, Game, NotFound } from '../component';
 import PrivateRouters from './PrivateRouters';
@@ -34,6 +34,7 @@ export const RouterComponents = () => {
     return (
         <Router>
             <Routes>
+                <Route path="/" element={<Navigate to="/room" />} />
                 <Route exact path="/" element={<PrivateRouters />}>
                     {privateRouters.map((route) => (
                         <Route
@@ -45,7 +46,7 @@ export const RouterComponents = () => {
                         />
                     ))}
                 </Route>
-                <Route path="/login" element={<Login />} exact />
+                <Route path="/login" element={<Login />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </Router>
