@@ -9310,6 +9310,11 @@ style-loader@0.19.0:
     loader-utils "^1.0.2"
     schema-utils "^0.3.0"
 
+styled-breakpoints@^10.2.3:
+  version "10.2.3"
+  resolved "https://registry.yarnpkg.com/styled-breakpoints/-/styled-breakpoints-10.2.3.tgz#ba706dc1ff6de081d13d88a362902cecf3a6d62a"
+  integrity sha512-6gxfj7aGC8cLSNRnnGgYOwD4Pe2RhzfqD/nzBSoKdgg0SX/esYBAxg3Jd4TT3d7ug1TFsrGU213aFaugqWh4qg==
+
 styled-components@^5.3.3:
   version "5.3.3"
   resolved "https://registry.npmjs.org/styled-components/-/styled-components-5.3.3.tgz"

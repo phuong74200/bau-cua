@@ -1,4 +1,21 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+
+const moveDown = keyframes`
+    0% {
+      opacity: 0;
+      transform: translateY(-10%);
+    }
+  
+    75% {
+      opacity: 0.5;
+      transform: translateY(10%);
+    }
+  
+    100% {
+      opacity: 1;
+      transform: translateY(0px); 
+    }
+  `;
 
 export const Button = styled.button`
     position: relative;
@@ -16,8 +33,9 @@ export const Button = styled.button`
     font-size: 14px;
     text-decoration: none;
 
-    background-color: ${(props) => props.background_color || '#fff'};
+    background: linear-gradient(90deg, #e63a0a, #ca0705);
     color: ${(props) => props.text_color || '#000'};
+    animation: ${moveDown} 0.5s ease-out;
 
     cursor: pointer;
 
@@ -48,7 +66,8 @@ export const Button = styled.button`
         width: 100%;
         border-radius: 10px;
 
-        background-color: ${(props) => props.background_color || '#fff'};
+        background: linear-gradient(270deg, rgba(202, 7, 5, 0.5), rgba(255, 255, 255, 0.5));
+        //background-color: ${(props) => props.background_color || '#fff'};
         color: ${(props) => props.text_color || '#000'};
 
         transition: all 0.5s;

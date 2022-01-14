@@ -1,3 +1,4 @@
+import { down } from 'styled-breakpoints';
 import styled from 'styled-components';
 
 export const Login = styled.div`
@@ -6,6 +7,12 @@ export const Login = styled.div`
     aspect-ratio: 3/2;
     background-size: cover;
     background-repeat: no-repeat;
+
+    ${down('md')} {
+        height: 100vh;
+        background-size: contain;
+        background-repeat: repeat;
+    }
 `;
 
 export const LoginMain = styled.div`
@@ -23,7 +30,7 @@ export const LoginMain = styled.div`
 export const BannerLeft = styled.div`
     position: fixed;
     top: 0;
-    left: 0;
+    left: -20px;
     bottom: 0;
     text-align: left;
 
@@ -37,6 +44,12 @@ export const BannerLeft = styled.div`
         height: 80vh;
         width: auto;
     }
+    ${down('md')} {
+        img:first-child {
+            height: auto;
+            width: auto;
+        }
+    }
 `;
 export const BannerRight = styled.div`
     position: fixed;
@@ -47,6 +60,12 @@ export const BannerRight = styled.div`
     & > img:first-child {
         height: 80vh;
         width: auto;
+    }
+    ${down('md')} {
+        img:first-child {
+            height: auto;
+            width: auto;
+        }
     }
 `;
 export const BannerBottom = styled.div`
