@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 
 import { Login, Room, Game, NotFound } from '../component';
 import PrivateRouters from './PrivateRouters';
+import PublicRouters from './PublicRouters';
 
 export const publicRouters = [
     {
@@ -46,7 +47,17 @@ export const RouterComponents = () => {
                         />
                     ))}
                 </Route>
-                <Route path="/login" element={<Login />} />
+                <Route exact path="/" element={<PublicRouters />}>
+                    {publicRouters.map((route) => (
+                        <Route
+                            key={route.name}
+                            path={route.path}
+                            element={route.component}
+                            exact={route.exact}
+                            restrict={route.restrict}
+                        />
+                    ))}
+                </Route>
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </Router>
