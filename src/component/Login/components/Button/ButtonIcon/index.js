@@ -15,7 +15,7 @@ const Button = styled.button`
     justify-content: center;
 
     font-size: ${(props) => props.fontSize || '16px'};
-    background: transparent;
+    background: ${(props) => props.bgrColor || 'transparent'};
 
     &:hover,
     &:active {

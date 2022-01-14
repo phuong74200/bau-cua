@@ -1,7 +1,7 @@
 import React from 'react';
 
 import baucua from '../../assets/images/baucua.jpg';
-import RoomCard from './RoomCard';
+import RoomCard from './components/RoomCard';
 import * as Styled from './index.style';
 
 function Room(props) {
@@ -9,9 +9,24 @@ function Room(props) {
         <div>
             <Styled.StyledRoom>
                 <Styled.RoomWrapper>
-                    <RoomCard />
-                    <RoomCard />
-                    <RoomCard />
+                    <Styled.RoomItem>
+                        <RoomCard />
+                    </Styled.RoomItem>
+                    <Styled.RoomItem>
+                        <RoomCard />
+                    </Styled.RoomItem>
+                    <Styled.RoomItem>
+                        <RoomCard />
+                    </Styled.RoomItem>
+                    <Styled.RoomItem>
+                        <RoomCard />
+                    </Styled.RoomItem>
+                    <Styled.RoomItem>
+                        <RoomCard />
+                    </Styled.RoomItem>
+                    <Styled.RoomItem>
+                        <RoomCard />
+                    </Styled.RoomItem>
                 </Styled.RoomWrapper>
             </Styled.StyledRoom>
         </div>
