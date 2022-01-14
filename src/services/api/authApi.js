@@ -1,4 +1,6 @@
-const getToken = async (token, type) => {
-    return 'abc';
+import ApiCaller from '../../utils/apiCaller';
+
+const getUser = async (token, type) => {
+    return await ApiCaller.get('/user', { token, type });
 };
-export default { getToken };
+export default { getUser };

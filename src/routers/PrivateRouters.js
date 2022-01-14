@@ -1,9 +1,13 @@
 import React from 'react';
 
+import { useSelector } from 'react-redux';
 import { Outlet, Navigate } from 'react-router-dom';
 
+import { authSelector } from '../component/Login/loginSlice';
+
 const PrivateRouters = () => {
-    let isAuthenticated = false;
+    let isAuthenticated = useSelector(authSelector);
+    console.log('isAuthenticated', isAuthenticated);
     return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
 };
 
