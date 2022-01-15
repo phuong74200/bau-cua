@@ -11,6 +11,7 @@ import cua from '../../assets/images/6-cua.jpg';
 import baucua from '../../assets/images/baucua.jpg';
 import ButtonBase from '../../component/Login/components/Button/ButtonBase';
 import Dialog from '../../component/Login/components/Dialog';
+import config from '../../configurations';
 import { Error } from '../../helpers/notify';
 import useDialog from '../../hooks/useDialog';
 import roomApi from '../../services/api/roomApi';
@@ -18,6 +19,8 @@ import { userDataSelector, signOut } from '../Login/loginSlice';
 import CreateRoomForm from './components/CreateRoomDialog';
 import RoomCard from './components/RoomCard';
 import * as Styled from './index.style';
+
+const { ADMIN_ROLE } = config;
 
 function Room() {
     const bgrImageList = [cop, bau, ga, tom, ca, cua];
@@ -46,17 +49,20 @@ function Room() {
         <Styled.Container>
             <Styled.StyledRoom>
                 <Styled.Header>{`Xin chào ${userData.name}, bạn hãy chọn phòng để bắt đầu đặt cược nhé !!!`}</Styled.Header>
+
                 <Styled.GroupAction>
-                    <ButtonBase
-                        width="16rem"
-                        padding="0.8rem"
-                        background_color="#e63a0a"
-                        text_color="white"
-                        animation={true}
-                        onClick={() => openDialog()}
-                    >
-                        Tạo phòng
-                    </ButtonBase>
+                    {userData.role === ADMIN_ROLE ? (
+                        <ButtonBase
+                            width="16rem"
+                            padding="0.8rem"
+                            background_color="#e63a0a"
+                            text_color="white"
+                            animation={true}
+                            onClick={() => openDialog()}
+                        >
+                            Tạo phòng
+                        </ButtonBase>
+                    ) : null}
                     <ButtonBase
                         width="16rem"
                         padding="0.8rem"

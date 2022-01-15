@@ -38,11 +38,11 @@ const Login = () => {
             updateIns();
             let result = await authApi.getUser(OAuthToken, type);
             dispatch(login(result.data));
-            Success('Đăng nhập thành công');
+            Success('Đăng nhập thành công.');
             navigate('/room');
         } catch (error) {
             console.log(error);
-            Error('Đăng nhập bằng mail edu.fpt');
+            Error('Đăng nhập thất bại.');
         } finally {
             //set Loading
         }
