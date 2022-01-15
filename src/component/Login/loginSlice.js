@@ -14,6 +14,7 @@ const loginSlice = createSlice({
         },
         signOut: (state) => {
             state.isAuthenticated = false;
+            localStorage.removeItem('token');
         },
     },
 });

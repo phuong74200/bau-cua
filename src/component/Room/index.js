@@ -43,46 +43,48 @@ function Room() {
     }, []);
 
     return (
-        <Styled.StyledRoom>
-            <Styled.Header>{`Xin chào ${userData.name}, bạn hãy chọn phòng để bắt đầu đặt cược nhé !!!`}</Styled.Header>
-            <Styled.GroupAction>
-                <ButtonBase
-                    width="16rem"
-                    padding="0.8rem"
-                    background_color="#e63a0a"
-                    text_color="white"
-                    animation={true}
-                    onClick={() => openDialog()}
-                >
-                    Tạo phòng
-                </ButtonBase>
-                <ButtonBase
-                    width="16rem"
-                    padding="0.8rem"
-                    background_color="#e63a0a"
-                    text_color="white"
-                    animation={true}
-                    onClick={() => dispatch(signOut())}
-                >
-                    Đăng xuất
-                </ButtonBase>
-            </Styled.GroupAction>
-            <Dialog title="" isShowing={isShowing} hide={closeDialog}>
-                <CreateRoomForm fetchingAllRooms={fetchingAllRooms} closeDialog={closeDialog} />
-            </Dialog>
-            <Styled.RoomWrapper>
-                {roomList.map((room, index) => (
-                    <Styled.RoomItem key={index}>
-                        <RoomCard
-                            roomInfo={room}
-                            index={index + 1}
-                            bgrImage={bgrImageList[index % 6]}
-                            fetchingAllRooms={fetchingAllRooms}
-                        />
-                    </Styled.RoomItem>
-                ))}
-            </Styled.RoomWrapper>
-        </Styled.StyledRoom>
+        <Styled.Container>
+            <Styled.StyledRoom>
+                <Styled.Header>{`Xin chào ${userData.name}, bạn hãy chọn phòng để bắt đầu đặt cược nhé !!!`}</Styled.Header>
+                <Styled.GroupAction>
+                    <ButtonBase
+                        width="16rem"
+                        padding="0.8rem"
+                        background_color="#e63a0a"
+                        text_color="white"
+                        animation={true}
+                        onClick={() => openDialog()}
+                    >
+                        Tạo phòng
+                    </ButtonBase>
+                    <ButtonBase
+                        width="16rem"
+                        padding="0.8rem"
+                        background_color="#e63a0a"
+                        text_color="white"
+                        animation={true}
+                        onClick={() => dispatch(signOut())}
+                    >
+                        Đăng xuất
+                    </ButtonBase>
+                </Styled.GroupAction>
+                <Dialog title="" isShowing={isShowing} hide={closeDialog}>
+                    <CreateRoomForm fetchingAllRooms={fetchingAllRooms} closeDialog={closeDialog} />
+                </Dialog>
+                <Styled.RoomWrapper>
+                    {roomList.map((room, index) => (
+                        <Styled.RoomItem key={index}>
+                            <RoomCard
+                                roomInfo={room}
+                                index={index + 1}
+                                bgrImage={bgrImageList[index % 6]}
+                                fetchingAllRooms={fetchingAllRooms}
+                            />
+                        </Styled.RoomItem>
+                    ))}
+                </Styled.RoomWrapper>
+            </Styled.StyledRoom>
+        </Styled.Container>
     );
 }
 

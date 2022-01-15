@@ -50,7 +50,7 @@ export const CardAction = styled.div`
     margin-bottom: 1.2rem;
 `;
 export const CardOption = styled.div`
-    opacity: 1;
+    opacity: 0;
     position: absolute;
     top: 8px;
     z-index: 1;
