@@ -3,24 +3,38 @@ import React, { useRef, useState } from 'react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 
 import ga from '../../../../assets/3-ga.jpg';
+import cop from '../../../../assets/images/1-cop.jpg';
+import bau from '../../../../assets/images/2-bau.jpg';
+import tom from '../../../../assets/images/4-tom.jpg';
+import ca from '../../../../assets/images/5-ca.jpg';
+import cua from '../../../../assets/images/6-cua.jpg';
 import useDetectClickOutside from '../../../../hooks/useDetectionClickOut';
 import ButtonBase from '../../../Login/components/Button/ButtonBase';
 import ButtonIcon from '../../../Login/components/Button/ButtonIcon';
 import CardOverlay from '../CardOverlay';
-import DeleteRoomForm from '../DeleteRoomForm';
-import UpdateRoomForm from '../UpdateRoomForm';
 import * as Styled from './index.style';
 
-function RoomCard() {
+function RoomCard({ bgrImage }) {
+    const optionList = [
+        { name: 'update', label: 'Chỉnh sửa' },
+        { name: 'delete', label: 'Xóa phòng' },
+    ];
+
     const wrapperCardRef = useRef(null);
     const wrapperCardOptionRef = useRef(null);
     const [isOpenOverlay, setIsOpenOverlay] = useState(false);
     const [isOpenCardOption, setIsOpenCardOption] = useState(false);
+    const [option, setOption] = useState('');
 
     useDetectClickOutside(wrapperCardRef, () => setIsOpenOverlay(false));
     useDetectClickOutside(wrapperCardOptionRef, () => setIsOpenCardOption(false));
+
+    const handleSelectOption = (option) => {
+        setOption(option);
+        setIsOpenOverlay(true);
+    };
     return (
-        <Styled.CardWrapper red={wrapperCardRef}>
+        <Styled.CardWrapper ref={wrapperCardRef}>
             <Styled.CardOption className="card__option">
                 <ButtonIcon
                     color="#fff"
@@ -29,13 +43,19 @@ function RoomCard() {
                     onClick={() => setIsOpenCardOption(true)}
                 ></ButtonIcon>
                 <Styled.ListAction ref={wrapperCardOptionRef} isOpenCardOption={isOpenCardOption}>
-                    <li>Chỉnh sửa</li>
-                    <hr />
-                    <li>Xóa phòng</li>
+                    {optionList.map((option, index) => (
+                        <li key={index} onClick={() => handleSelectOption(option.name)}>
+                            {option.label}
+                        </li>
+                    ))}
                 </Styled.ListAction>
             </Styled.CardOption>
-            <CardOverlay isOpenOverlay={isOpenOverlay} setIsOpenOverlay={setIsOpenOverlay} />
-            <Styled.CardImage style={{ backgroundImage: `url(${ga})` }}></Styled.CardImage>
+            <CardOverlay
+                isOpenOverlay={isOpenOverlay}
+                setIsOpenOverlay={setIsOpenOverlay}
+                option={option}
+            />
+            <Styled.CardImage style={{ backgroundImage: `url(${bgrImage})` }}></Styled.CardImage>
             <Styled.CardContent>
                 <h3>Lính Thủy Đánh Bộ</h3>
                 <span>Phòng số: 1</span>

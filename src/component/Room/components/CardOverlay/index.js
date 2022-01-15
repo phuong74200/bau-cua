@@ -7,7 +7,7 @@ import DeleteRoomForm from '../DeleteRoomForm';
 import UpdateRoomForm from '../UpdateRoomForm';
 import * as Styled from './index.style';
 
-function CardOverlay({ isOpenOverlay = false, setIsOpenOverlay = () => {} }) {
+function CardOverlay({ isOpenOverlay = false, setIsOpenOverlay = () => {}, option = '' }) {
     return (
         <Styled.CardOverlay isOpenOverlay={isOpenOverlay}>
             <Styled.OverlayBody>
@@ -22,7 +22,7 @@ function CardOverlay({ isOpenOverlay = false, setIsOpenOverlay = () => {} }) {
                         }}
                     ></ButtonIcon>
                 </Styled.BtnCloseDialog>
-                <DeleteRoomForm />
+                {option === 'update' ? <UpdateRoomForm /> : <DeleteRoomForm />}
             </Styled.OverlayBody>
         </Styled.CardOverlay>
     );

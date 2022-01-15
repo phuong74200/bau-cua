@@ -89,4 +89,8 @@ export const ListAction = styled.div`
             background-color: #dfe2e6;
         }
     }
+
+    & > li:last-child {
+        border-top: 1px solid #000;
+    }
 `;
