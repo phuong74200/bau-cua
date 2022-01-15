@@ -62,7 +62,7 @@ async function get(path = '', data = {}) {
             });
     }
 }
-async function del(path = '', data = {}) {
+async function remove(path = '', data = {}) {
     try {
         const response = await instance.delete(path, {
             params: data,
@@ -79,4 +79,4 @@ async function del(path = '', data = {}) {
     }
 }
 
-export default { post, get, put, del };
+export default { post, get, put, remove };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -11,7 +11,9 @@ import cua from '../../assets/images/6-cua.jpg';
 import baucua from '../../assets/images/baucua.jpg';
 import ButtonBase from '../../component/Login/components/Button/ButtonBase';
 import Dialog from '../../component/Login/components/Dialog';
+import { Error } from '../../helpers/notify';
 import useDialog from '../../hooks/useDialog';
+import roomApi from '../../services/api/roomApi';
 import { userDataSelector, signOut } from '../Login/loginSlice';
 import CreateRoomForm from './components/CreateRoomDialog';
 import RoomCard from './components/RoomCard';
@@ -23,6 +25,22 @@ function Room() {
     const dispatch = useDispatch();
 
     const [isShowing, toggle, openDialog, closeDialog] = useDialog(false);
+    const [roomList, setRoomList] = useState([]);
+
+    const fetchingAllRooms = async () => {
+        try {
+            let result = await roomApi.getAllRooms();
+            if (result) {
+                setRoomList(result.data);
+            }
+        } catch (error) {
+            console.log(error);
+            Error('Lỗi server');
+        }
+    };
+    useEffect(() => {
+        fetchingAllRooms();
+    }, []);
 
     return (
         <Styled.StyledRoom>
@@ -50,12 +68,17 @@ function Room() {
                 </ButtonBase>
             </Styled.GroupAction>
             <Dialog title="" isShowing={isShowing} hide={closeDialog}>
-                <CreateRoomForm />
+                <CreateRoomForm fetchingAllRooms={fetchingAllRooms} closeDialog={closeDialog} />
             </Dialog>
             <Styled.RoomWrapper>
-                {bgrImageList.map((room, index) => (
+                {roomList.map((room, index) => (
                     <Styled.RoomItem key={index}>
-                        <RoomCard bgrImage={bgrImageList[index % 6]} />
+                        <RoomCard
+                            roomInfo={room}
+                            index={index + 1}
+                            bgrImage={bgrImageList[index % 6]}
+                            fetchingAllRooms={fetchingAllRooms}
+                        />
                     </Styled.RoomItem>
                 ))}
             </Styled.RoomWrapper>
