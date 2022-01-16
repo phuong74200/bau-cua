@@ -21,7 +21,6 @@ function JoinRoomForm({ fetchingAllRooms = () => {}, roomId, setIsOpenOverlay })
             Success('Vào phòng thành công.');
             navigate(`/game?roomID=${value}`);
         } catch (error) {
-            console.log(error);
             if (error.code === 400) {
                 Error('Bạn đã vào phòng trước đó.');
             } else {

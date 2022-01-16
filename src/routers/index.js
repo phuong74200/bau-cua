@@ -5,7 +5,6 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 
 import { Login, Room, Game, NotFound } from '../component';
 import { login, signOut } from '../component/Login/loginSlice';
-import { Error } from '../helpers/notify';
 import authApi from '../services/api/authApi';
 import PrivateRouters from './PrivateRouters';
 import PublicRouters from './PublicRouters';
@@ -44,7 +43,6 @@ export const RouterComponents = () => {
                 let result = await authApi.getUser(localStorage.getItem('token'), 'firebase');
                 dispatch(login(result.data));
             } catch (error) {
-                console.log(error);
                 dispatch(signOut());
             } finally {
                 //set Loading

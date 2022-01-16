@@ -1,5 +1,4 @@
-/* eslint-disable no-console */
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -12,11 +11,9 @@ import cua from '../../assets/_pack/crab.png';
 import ca from '../../assets/_pack/fish.png';
 import tom from '../../assets/_pack/shrimp.png';
 import cop from '../../assets/_pack/tiger.png';
-import bgrImage from '../../assets/images/background.PNG';
 import bannerBottom from '../../assets/images/banner_bottom.png';
 import bannerLeft from '../../assets/images/banner_left.png';
 import bannerRight from '../../assets/images/banner_right.png';
-import baucua from '../../assets/images/baucua.jpg';
 import background_banner_bottom from '../../assets/images/nentet.png';
 import { Error, Success } from '../../helpers/notify';
 import authApi from '../../services/api/authApi';
@@ -35,7 +32,6 @@ const Login = () => {
 
     const onOAuthSuccess = async (OAuthToken, type = 'firebase') => {
         try {
-            console.log(OAuthToken);
             localStorage.setItem('token', OAuthToken);
             updateIns();
             let result = await authApi.getUser(OAuthToken, type);
@@ -43,7 +39,6 @@ const Login = () => {
             Success('Đăng nhập thành công.');
             navigate('/room');
         } catch (error) {
-            console.log(error);
             Error('Đăng nhập thất bại.');
         } finally {
             //set Loading
@@ -52,7 +47,6 @@ const Login = () => {
 
     const onFirebaseLoginSuccess = async (result) => {
         onOAuthSuccess(await result.user.getIdToken(true));
-        console.log('firebase: ', result.user);
     };
 
     const handleBtnLogin = () => {

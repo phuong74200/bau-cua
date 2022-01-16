@@ -100,12 +100,12 @@ function RoomCard({ bgrImage, roomInfo, index, fetchingAllRooms }) {
             />
             {/* <Styled.CardImage style={{ backgroundImage: `url(${bgrImage})` }}></Styled.CardImage> */}
             <Styled.Slot>
-                <Styled.Plate hoverColor={color[index][2]}>
-                    <Styled.Layer duration={30 + index * 10}>
-                        <Polygon fill={color[index][0]} />
+                <Styled.Plate hoverColor={color[index % 6][2]}>
+                    <Styled.Layer duration={30 + (index % 6) * 10}>
+                        <Polygon fill={color[index % 6][0]} />
                     </Styled.Layer>
-                    <Styled.Layer duration={10 + index * 5}>
-                        <Polygon fill={color[index][1]} />
+                    <Styled.Layer duration={10 + (index % 6) * 5}>
+                        <Polygon fill={color[index % 6][1]} />
                     </Styled.Layer>
                     <Styled.Icon>
                         <img src={bgrImage} alt={bgrImage} />
@@ -114,7 +114,7 @@ function RoomCard({ bgrImage, roomInfo, index, fetchingAllRooms }) {
             </Styled.Slot>
             <Styled.CardContent>
                 <h3>{roomInfo.name}</h3>
-                <span>Phòng số: {index}</span>
+                <span>Phòng số: {index + 1}</span>
             </Styled.CardContent>
             <Styled.CardAction>
                 <ButtonBase
