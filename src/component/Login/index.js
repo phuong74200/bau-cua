@@ -17,13 +17,11 @@ import bannerLeft from '../../assets/images/banner_left.png';
 import bannerRight from '../../assets/images/banner_right.png';
 import baucua from '../../assets/images/baucua.jpg';
 import background_banner_bottom from '../../assets/images/nentet.png';
-import useDialog from '../../hooks/useDialog';
+import { Error, Success } from '../../helpers/notify';
 import authApi from '../../services/api/authApi';
-import firebase, { PopupGoogleLogin } from '../../services/authentication/';
+import { PopupGoogleLogin } from '../../services/authentication/';
 import { updateIns } from '../../utils/apiCaller';
 import ButtonBase from './components/Button/ButtonBase';
-import ButtonLogin from './components/Button/ButtonLogin';
-import Dialog from './components/Dialog';
 import Dice from './components/Dice';
 import * as Styled from './index.style.js';
 import { login } from './loginSlice';
@@ -32,7 +30,6 @@ const Login = () => {
     const isMobile = useBreakpoint(down('sm'));
     let navigate = useNavigate();
     let dispatch = useDispatch();
-    const [isShowing, toggle, openDialog, closeDialog] = useDialog(false);
 
     const onOAuthSuccess = async (OAuthToken, type = 'firebase') => {
         try {
@@ -40,11 +37,12 @@ const Login = () => {
             localStorage.setItem('token', OAuthToken);
             updateIns();
             let result = await authApi.getUser(OAuthToken, type);
-            dispatch(login());
+            dispatch(login(result.data));
+            Success('Đăng nhập thành công.');
             navigate('/room');
         } catch (error) {
             console.log(error);
-            console.log('Lỗi rồi');
+            Error('Đăng nhập thất bại.');
         } finally {
             //set Loading
         }

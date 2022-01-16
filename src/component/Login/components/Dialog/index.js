@@ -1,7 +1,7 @@
 import React from 'react';
 
 import ReactDOM from 'react-dom';
-import { FaRegTimesCircle } from 'react-icons/fa';
+import { BsXLg } from 'react-icons/bs';
 
 import { ButtonIcon } from '../Button/ButtonIcon';
 import * as Styled from './index.style';
@@ -19,11 +19,9 @@ const Dialog = ({ isShowing, hide, children, title, ...others }) =>
                                       <b>{title}</b>
                                   </Styled.Title>
                                   <ButtonIcon
-                                      icon={
-                                          <FaRegTimesCircle
-                                              style={{ width: '20px', height: '20px' }}
-                                          />
-                                      }
+                                      icon={<BsXLg />}
+                                      border="1px solid #000"
+                                      color="#fff"
                                       onClick={() => hide()}
                                   />
                               </Styled.ModalHeader>

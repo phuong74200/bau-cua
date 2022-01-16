@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
+import { useDispatch } from 'react-redux';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 
 import { Login, Room, Game, NotFound } from '../component';
+import { login, signOut } from '../component/Login/loginSlice';
+import { Error } from '../helpers/notify';
+import authApi from '../services/api/authApi';
 import PrivateRouters from './PrivateRouters';
+import PublicRouters from './PublicRouters';
 
 export const publicRouters = [
     {
@@ -31,6 +36,23 @@ export const privateRouters = [
 ];
 
 export const RouterComponents = () => {
+    let dispatch = useDispatch();
+    useEffect(() => {
+        const getUserData = async () => {
+            try {
+                if (!localStorage.getItem('token')) return;
+                let result = await authApi.getUser(localStorage.getItem('token'), 'firebase');
+                dispatch(login(result.data));
+            } catch (error) {
+                console.log(error);
+                dispatch(signOut());
+            } finally {
+                //set Loading
+            }
+        };
+        getUserData();
+    }, [dispatch]);
+
     return (
         <Router>
             <Routes>
@@ -46,7 +68,17 @@ export const RouterComponents = () => {
                         />
                     ))}
                 </Route>
-                <Route path="/login" element={<Login />} />
+                <Route exact path="/" element={<PublicRouters />}>
+                    {publicRouters.map((route) => (
+                        <Route
+                            key={route.name}
+                            path={route.path}
+                            element={route.component}
+                            exact={route.exact}
+                            restrict={route.restrict}
+                        />
+                    ))}
+                </Route>
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </Router>

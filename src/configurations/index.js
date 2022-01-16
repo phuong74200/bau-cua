@@ -9,4 +9,6 @@ export default {
         appId: '1:303665428267:web:3321e03b66503f6191b76e',
         measurementId: 'G-BQMLYDRYZJ',
     },
+    USER_ROLE: 'user',
+    ADMIN_ROLE: 'admin',
 };

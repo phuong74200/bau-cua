@@ -15,11 +15,11 @@ const Button = styled.button`
     justify-content: center;
 
     font-size: ${(props) => props.fontSize || '16px'};
-    background-color: transparent;
+    background: ${(props) => props.bgrColor || 'transparent'};
 
     &:hover,
     &:active {
-        background-color: ${(props) => props.bgrColor || 'rgba(89, 171, 174, 0.1)'};
+        background: ${(props) => props.bgrColor || 'linear-gradient(45deg, #e63a0a, #ca0705)'};
         color: ${(props) => props.color || 'rgb(89, 171, 174)'};
         cursor: pointer;
     }
