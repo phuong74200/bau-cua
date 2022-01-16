@@ -1,126 +1,75 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
-import layer from '../../../assets/baucua.jpg';
-import socket from '../socket';
+import calabash from '../../../assets/_pack/calabash.png';
+import chicken from '../../../assets/_pack/chicken.png';
+import crab from '../../../assets/_pack/crab.png';
+import fish from '../../../assets/_pack/fish.png';
+import shrimp from '../../../assets/_pack/shrimp.png';
+import tiger from '../../../assets/_pack/tiger.png';
 import * as Styled from './index.style';
 
-const Slot = ({ items, set, setGold, gold }) => {
-    const betSlot = () => {
-        if (gold >= 5) {
-            const user = 'self';
-            setGold(gold - 5);
-            set((pre) => {
-                return {
-                    ...pre,
-                    [user]: {
-                        bet: (pre[user] ? pre[user].bet : 0) + 5,
-                        self: true,
-                        position: pre[user]
-                            ? pre[user].position
-                            : { x: getRnd(10, 90), y: getRnd(10, 90) },
-                    },
-                };
-            });
-        } else {
-            console.log('out of money');
-        }
-    };
-
+const Polygon = ({ fill }) => {
     return (
-        <Styled.Slot onClick={betSlot}>
-            {Object.entries(items).map(([key, value]) => {
-                const bet = value.bet;
-                const color = () => {
-                    if (bet > 15) {
-                        return '#dce775';
-                    }
-                    if (bet > 13) {
-                        return '#e57373';
-                    }
-                    if (bet > 11) {
-                        return '#ffb74d';
-                    }
-                    if (bet > 9) {
-                        return '#ba68c8';
-                    }
-                    if (bet > 7) {
-                        return '#64b5f6';
-                    }
-                    if (bet > 5) {
-                        return '#81c784';
-                    }
-                    return 'white';
-                };
-                return (
-                    <Styled.Tag key={key} position={value.position} bet={bet} color={color()}>
-                        {value.bet}
-                    </Styled.Tag>
-                );
-            })}
-        </Styled.Slot>
+        <svg xmlns="http://www.w3.org/2000/svg" width="195" height="195">
+            <path
+                stroke="none"
+                fill={fill}
+                d="M82.5 4.1602540378444a30 30 0 0 1 30 0l58.334591186013 33.679491924311a30 30 0 0 1 15 25.980762113533l0 67.358983848622a30 30 0 0 1 -15 25.980762113533l-58.334591186013 33.679491924311a30 30 0 0 1 -30 0l-58.334591186013 -33.679491924311a30 30 0 0 1 -15 -25.980762113533l1.0727994705995e-13 -67.358983848622a30 30 0 0 1 15 -25.980762113533"
+            ></path>
+        </svg>
     );
 };
 
-const getRnd = (min, max) => {
-    return Math.floor(Math.random() * (max - min + 1) + min);
-};
-
-const Board = ({ setGold, gold }) => {
-    const tags = new Array(6);
-    tags[0] = useState({});
-    tags[1] = useState({});
-    tags[2] = useState({});
-    tags[3] = useState({});
-    tags[4] = useState({});
-    tags[5] = useState({});
-
-    useEffect(() => {
-        const listener = (message) => {
-            if (message.type === 'bet') {
-                const bets = message.data.bet;
-                const user = message.data.user;
-                bets.forEach((bet, index) => {
-                    if (bet > 0) {
-                        tags[index][1]((pre) => {
-                            return {
-                                ...pre,
-                                [user]: {
-                                    bet: (pre[user] ? pre[user].bet : 0) + bet,
-                                    position: pre[user]
-                                        ? pre[user].position
-                                        : { x: getRnd(10, 90), y: getRnd(10, 90) },
-                                },
-                            };
-                        });
-                    }
-                });
-            }
-        };
-
-        socket.on('events', listener);
-
-        return () => socket.off('events', listener);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+const Board = ({ tagsData, putBetWithServer }) => {
+    const slots = [tiger, calabash, chicken, shrimp, fish, crab];
+    const color = [
+        ['#A1CAE2', '#D7E9F7', '#D6E5FA'],
+        ['#A685E2', '#C9CBFF', '#D9D7F1'],
+        ['#FFB677', '#FFD98E', '#F6EABE'],
+        ['#FFC4D0', '#FBE8E7', '#F7DAD9'],
+        ['#FFAAA5', '#FFD3B6', '#F4C7AB'],
+        ['#CAF7E3', '#EDFFEC', '#D5ECC2'],
+    ];
 
     return (
-        <Styled.Board layer={layer}>
-            <img src={layer} alt="board" />
-            <Styled.Grid>
-                {tags.map((tag, index) => {
-                    return (
-                        <Slot
-                            key={index}
-                            items={tag[0]}
-                            set={tag[1]}
-                            setGold={setGold}
-                            gold={gold}
-                            index={index}
-                        ></Slot>
-                    );
-                })}
-            </Styled.Grid>
-        </Styled.Board>
+        <Styled.Grid>
+            {slots.map((slot, index) => {
+                return (
+                    <Styled.Slot
+                        key={index}
+                        onClick={() => {
+                            putBetWithServer(index, 5);
+                        }}
+                    >
+                        <Styled.Plate hoverColor={color[index][2]}>
+                            <Styled.Layer duration={30 + index * 10}>
+                                <Polygon fill={color[index][0]} />
+                            </Styled.Layer>
+                            <Styled.Layer duration={10 + index * 5}>
+                                <Polygon fill={color[index][1]} />
+                            </Styled.Layer>
+                            <Styled.Icon>
+                                <img src={slot} alt={slot} />
+                            </Styled.Icon>
+                            <Styled.TagContainer>
+                                {Object.entries(tagsData[index][0]).map(([key, value]) => {
+                                    const bet = value.bet;
+                                    return (
+                                        <Styled.TagShadow
+                                            key={key}
+                                            position={{ x: value.x || 0, y: value.y || 0 }}
+                                            bet={bet}
+                                        >
+                                            <Styled.Tag bet={bet}>{bet}</Styled.Tag>
+                                        </Styled.TagShadow>
+                                    );
+                                })}
+                            </Styled.TagContainer>
+                        </Styled.Plate>
+                    </Styled.Slot>
+                );
+            })}
+        </Styled.Grid>
     );
 };
 
