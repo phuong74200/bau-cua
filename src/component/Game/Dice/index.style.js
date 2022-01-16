@@ -20,46 +20,45 @@ const Cube = styled.div.attrs(({ rotate, size }) => ({
 
     .back {
         transform: translateZ(-${({ size }) => size / 2}px);
-        background: red;
+        background: #f6eabe;
     }
 
     .front {
         transform: rotateX(-180deg) translateZ(-${({ size }) => size / 2}px) scaleY(-1);
-        background: green;
+        background: #d9d7f1;
     }
 
     .right {
         transform: rotateY(-90deg) translateZ(-${({ size }) => size / 2}px);
-        background: blue;
+        background: #d5ecc2;
     }
 
     .left {
         transform: rotateY(90deg) translateZ(-${({ size }) => size / 2}px);
-        background: yellow;
+        background: #f4c7ab;
     }
 
     .top {
         transform: rotateX(-90deg) translateZ(-${({ size }) => size / 2}px) scaleY(-1);
-        background: #f2f2f2;
+        background: #f7dad9;
     }
 
     .bottom {
         transform: rotateX(90deg) translateZ(-${({ size }) => size / 2}px);
-        background: black;
+        background: #d6e5fa;
     }
 
     div {
-        background: red;
         position: absolute;
         width: ${({ size }) => size}px;
         height: ${({ size }) => size}px;
         box-sizing: border-box;
-        border: 2px solid black;
 
         img {
             object-fit: cover;
             max-width: 100%;
             max-height: 100%;
+            transform: scale(0.5);
         }
     }
 `;

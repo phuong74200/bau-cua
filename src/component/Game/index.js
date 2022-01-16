@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 
 import axios from 'axios';
 
+import Admin from './AdminBar';
 import Board from './Board';
-import Dice from './Dice';
+import RollStage from './RollStage';
 import * as Styled from './index.style';
 import socket from './socket';
 
@@ -20,21 +21,25 @@ const Game = () => {
         useState({}),
     ];
 
-    const [gold, setGold] = useState(0);
-    const [name, setName] = useState('');
+    const [gold, setGold] = useState(1000);
+    const [name, setName] = useState('username');
+    const [role, setRole] = useState('user');
 
-    useEffect(() => {
-        axios
-            .get('http://localhost:5000/user', {
-                headers: {
-                    Authorization: 'Bearer ' + localStorage.getItem('token'),
-                },
-            })
-            .then((res) => {
-                setGold(res.data.data.coin);
-            })
-            .catch((error) => {});
-    }, []);
+    // useEffect(() => {
+    //     axios
+    //         .get('http://localhost:5000/user', {
+    //             headers: {
+    //                 Authorization: 'Bearer ' + localStorage.getItem('token'),
+    //             },
+    //         })
+    //         .then((res) => {
+    //             const data = res.data.data;
+    //             setGold(data.coin);
+    //             setName(data.name);
+    //             setRole(data.role);
+    //         })
+    //         .catch((error) => { });
+    // }, []);
 
     const playing = {};
     const [playerCount, setPlayerCount] = useState(0);
@@ -54,7 +59,7 @@ const Game = () => {
         setPlayerCount(Object.keys(playing).length);
 
         if (gold >= betValue) {
-            setGold(gold - betValue);
+            setGold((pre) => pre - betValue);
             set((preState) => {
                 const x = ~~scale(
                     seedrandom(user + 'x' + position.toString())() * 100,
@@ -80,6 +85,8 @@ const Game = () => {
                     },
                 };
             });
+        } else {
+            console.log('not enough gold');
         }
     };
 
@@ -100,9 +107,9 @@ const Game = () => {
         );
     };
 
-    useEffect(() => {
-        putBet(1, { user: 'fuong' });
+    const [isRoll, setRoll] = useState(false);
 
+    useEffect(() => {
         const listener = (message) => {
             const TYPE = message.type;
             if (TYPE === 'bet') {
@@ -113,33 +120,81 @@ const Game = () => {
                     }
                 });
             }
+            if (TYPE === 'roll') {
+                kick(message.rollResult);
+            }
         };
         socket.on('events', listener);
         return () => socket.off('events', listener);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    const [diceFace, setDiceFace] = useState([
+        [0, 0],
+        [0, 0],
+        [0, 0],
+    ]);
+
+    const kick = (face = []) => {
+        const map = [
+            [90, 0],
+            [0, 0],
+            [180, 0],
+            [-90, 0],
+            [0, 90],
+            [0, -90],
+        ];
+        setRoll(true);
+        face = face.map((x) => map[x]);
+        for (let x of face) {
+            x[0] === 0 ? Math.floor(Math.random() * 20) * 360 : x[0];
+            x[1] === 0 ? Math.floor(Math.random() * 20) * 360 : x[1];
+            x[0] += 36000;
+            x[1] += 36000;
+        }
+        setDiceFace(face);
+
+        setTimeout(() => {
+            setRoll(false);
+            setTimeout(() => {
+                setDiceFace([
+                    [0, 0],
+                    [0, 0],
+                    [0, 0],
+                ]);
+            }, 5000);
+        }, 10000);
+    };
+
     return (
         <Styled.Game>
+            <RollStage isShow={isRoll} diceFace={diceFace} />
             <Styled.Container>
-                <Styled.Footer>
-                    <div>
-                        Gold: <span>{gold}</span>
-                    </div>
-                    <div>
-                        <span>{name}</span>
-                    </div>
+                <Styled.Footer justify="flex-start">
+                    <Styled.Button>
+                        <span>coin: {gold}</span>
+                    </Styled.Button>
+                    {role === 'admin' ? (
+                        <Styled.Button>
+                            <Admin />
+                        </Styled.Button>
+                    ) : (
+                        <Styled.Button>{name}</Styled.Button>
+                    )}
                 </Styled.Footer>
                 <Styled.View>
                     <Board tagsData={tagsData} putBetWithServer={putBetWithServer} />
                 </Styled.View>
-                <Styled.Footer>
-                    <div>
-                        Player: <span>{playerCount}</span>
-                    </div>
-                    <div>
-                        RoomID: <span>1</span>
-                    </div>
+                <Styled.Footer justify="flex-end">
+                    <Styled.Button>
+                        <span>{playerCount} players</span>
+                    </Styled.Button>
+                    <Styled.Button>
+                        <span>Room_SE</span>
+                    </Styled.Button>
+                    <Styled.Button status="close">
+                        <span>Opening</span>
+                    </Styled.Button>
                 </Styled.Footer>
             </Styled.Container>
         </Styled.Game>
