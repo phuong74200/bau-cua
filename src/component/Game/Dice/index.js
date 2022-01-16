@@ -13,8 +13,8 @@ const Dice = ({ size, rotate }) => {
     const position = ['front', 'back', 'left', 'right', 'top', 'bottom'];
 
     return (
-        <Styled.Container size={size || 200}>
-            <Styled.Cube size={size || 200} rotate={rotate}>
+        <Styled.Container size={size || 150}>
+            <Styled.Cube size={size || 150} rotate={rotate}>
                 {faces.map((face, index) => {
                     return (
                         <div key={index} className={position[index]}>
