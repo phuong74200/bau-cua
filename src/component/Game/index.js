@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
+import { useParams } from 'react-router-dom';
+
 import Board from './Board';
 import Dice from './Dice';
 import Rule from './Rule';
