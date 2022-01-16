@@ -56,10 +56,49 @@ const Button = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 4px;
-    padding: 8px;
+    border-radius: 8px;
     box-sizing: border-box;
-    background-color: ${({ status }) => (status === 'close' ? '#F38BA0' : '#C9E4C5')};
+    padding: 8px;
+    height: 100%;
+    width: auto;
+    background-color: ${({ bgColor }) => (bgColor ? bgColor : '#fbf3e6')};
+    cursor: ${({ isClick }) => (isClick ? 'pointer' : 'auto')};
+    font-size: 1.5rem;
 `;
 
-export { Game, Container, Footer, View, Button };
+const Box = styled.div`
+    display: flex;
+    width: auto;
+    height: 100%;
+    gap: 10px;
+`;
+
+const TextField = styled.div`
+    border: 1px solid #616161;
+    box-sizing: border-box;
+    border-radius: 8px;
+    padding: 8px;
+    width: auto;
+    outline: none;
+    position: relative;
+
+    ::before {
+        position: absolute;
+        content: 'ROOM ID';
+        width: auto;
+        height: auto;
+        background-color: white;
+        top: -15px;
+        left: 8px;
+        padding: 0px 4px;
+        font-size: 1rem;
+    }
+`;
+
+const Sides = styled.div`
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    grid-template-rows: 1fr;
+`;
+
+export { Game, Container, Footer, View, Button, Box, TextField, Sides };

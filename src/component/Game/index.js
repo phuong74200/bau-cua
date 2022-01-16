@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 
 import axios from 'axios';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 
-import Admin from './AdminBar';
+import * as Admin from './AdminBar';
 import Board from './Board';
 import RollStage from './RollStage';
 import * as Styled from './index.style';
 import socket from './socket';
+
+import 'react-toastify/dist/ReactToastify.css';
 
 const seedrandom = require('seedrandom');
 
@@ -31,7 +34,7 @@ const Game = () => {
         },
     });
 
-    const [gold, setGold] = useState(1000);
+    const [gold, setGold] = useState(0);
     const [name, setName] = useState('username');
     const [role, setRole] = useState('user');
     const [searchParams, setSearchParams] = useSearchParams();
@@ -45,7 +48,9 @@ const Game = () => {
                 setName(data.name);
                 setRole(data.role);
             })
-            .catch((error) => { });
+            .catch((error) => {
+                console.log(error);
+            });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -66,53 +71,64 @@ const Game = () => {
         playing[user] = null;
         setPlayerCount(Object.keys(playing).length);
 
-        if (gold >= betValue) {
-            setGold((pre) => pre - betValue);
-            set((preState) => {
-                const x = ~~scale(
-                    seedrandom(user + 'x' + position.toString())() * 100,
-                    0,
-                    100,
-                    10,
-                    90
-                );
-                const y = ~~scale(
-                    seedrandom(user + 'y' + position.toString())() * 100,
-                    0,
-                    100,
-                    10,
-                    90
-                );
-                return {
-                    ...preState,
-                    [user]: {
-                        bet: (preState[user] ? preState[user].bet : 0) + betValue,
-                        self: true,
-                        x: preState[user] ? preState[user].x : x,
-                        y: preState[user] ? preState[user].y : y,
-                    },
-                };
-            });
-        } else {
-            console.log('not enough gold');
-        }
+        setGold((pre) => {
+            if (pre >= betValue) {
+                set((preState) => {
+                    const x = ~~scale(
+                        seedrandom(user + 'x' + position.toString())() * 100,
+                        0,
+                        100,
+                        10,
+                        90
+                    );
+                    const y = ~~scale(
+                        seedrandom(user + 'y' + position.toString())() * 100,
+                        0,
+                        100,
+                        10,
+                        90
+                    );
+                    return {
+                        ...preState,
+                        [user]: {
+                            bet: (preState[user] ? preState[user].bet : 0) + betValue,
+                            self: true,
+                            x: preState[user] ? preState[user].x : x,
+                            y: preState[user] ? preState[user].y : y,
+                        },
+                    };
+                });
+                return pre - betValue;
+            } else {
+                toast.error('Không đủ coin');
+            }
+            return pre;
+        });
     };
 
     const putBetWithServer = (position, betValue = 5) => {
         const bet = new Array(6).fill(0);
         bet[position] = betValue;
-        axios.post(
-            `room/${searchParams.get('roomID')}/bet`,
-            {
-                bet: bet,
-            },
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: 'Bearer ' + localStorage.getItem('token'),
+        _axios
+            .post(
+                `/room/${searchParams.get('roomID')}/bet`,
+                {
+                    bet: bet,
                 },
-            }
-        );
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: 'Bearer ' + localStorage.getItem('token'),
+                    },
+                }
+            )
+            .then((res) => {
+                toast.success('Đặt cược thành công!');
+            })
+            .catch((e) => {
+                const data = e.response.data;
+                toast.error(data.message);
+            });
     };
 
     const [isRoll, setRoll] = useState(false);
@@ -129,7 +145,8 @@ const Game = () => {
                 });
             }
             if (TYPE === 'roll') {
-                kick(message.rollResult);
+                const data = message.data;
+                kick(data.rollResult);
             }
         };
         socket.on('events', listener);
@@ -167,11 +184,20 @@ const Game = () => {
                 .get('/user')
                 .then((res) => {
                     const data = res.data.data;
-                    setGold(data.coin);
+                    setGold((pre) => {
+                        if (data.coin > pre) {
+                            toast.success(`You won ${data.coin - pre} coins`);
+                        } else {
+                            toast.error(`You lose 5 coins`);
+                        }
+                        return data.coin;
+                    });
                     setName(data.name);
                     setRole(data.role);
                 })
-                .catch((error) => {});
+                .catch((error) => {
+                    toast.error(error.response.data.message);
+                });
             // eslint-disable-next-line react-hooks/exhaustive-deps
             setRoll(false);
             setTimeout(() => {
@@ -184,37 +210,63 @@ const Game = () => {
         }, 10000);
     };
 
+    const copyRoomID = () => {
+        navigator.clipboard.writeText(searchParams.get('roomID'));
+    };
+
+    const navigateTo = useNavigate();
+
+    const logout = () => {
+        localStorage.removeItem('token');
+        navigateTo('/login');
+    };
+
     return (
         <Styled.Game>
             <RollStage isShow={isRoll} diceFace={diceFace} />
-            <Styled.Container>
-                <Styled.Footer justify="flex-start" top={8}>
-                    <Styled.Button>
-                        <span>coin: {gold}</span>
-                    </Styled.Button>
-                    {role === 'admin' ? (
-                        <Styled.Button>
-                            <Admin />
+            <Styled.Sides>
+                <Styled.Container>
+                    <Styled.Footer justify="space-between" top={8}>
+                        <Styled.Box>
+                            <Styled.Button>
+                                <span>coin: {gold}</span>
+                            </Styled.Button>
+                            {role === 'admin' ? (
+                                <Styled.Box>
+                                    <Admin.Roll />
+                                    <Admin.EndGame />
+                                </Styled.Box>
+                            ) : (
+                                <Styled.Button>{name}</Styled.Button>
+                            )}
+                        </Styled.Box>
+                        <Styled.Box>
+                            <Styled.Button bgColor="#FF7878" isClick onClick={logout}>
+                                <span>Đăng xuất</span>
+                            </Styled.Button>
+                            <Styled.TextField
+                                readonly
+                                editable
+                                onClick={() => {
+                                    copyRoomID();
+                                    toast.success('Room id copied to clipboard!');
+                                }}
+                            >
+                                {searchParams.get('roomID')}
+                            </Styled.TextField>
+                        </Styled.Box>
+                    </Styled.Footer>
+                    <Styled.View>
+                        <Board tagsData={tagsData} putBetWithServer={putBetWithServer} />
+                    </Styled.View>
+                    <Styled.Footer justify="flex-end" bottom={8}>
+                        <Styled.Button status="close">
+                            <span>Opening</span>
                         </Styled.Button>
-                    ) : (
-                        <Styled.Button>{name}</Styled.Button>
-                    )}
-                </Styled.Footer>
-                <Styled.View>
-                    <Board tagsData={tagsData} putBetWithServer={putBetWithServer} />
-                </Styled.View>
-                <Styled.Footer justify="flex-end" bottom={8}>
-                    <Styled.Button>
-                        <span>{playerCount} players</span>
-                    </Styled.Button>
-                    <Styled.Button>
-                        <span>Room_SE</span>
-                    </Styled.Button>
-                    <Styled.Button status="close">
-                        <span>Opening</span>
-                    </Styled.Button>
-                </Styled.Footer>
-            </Styled.Container>
+                    </Styled.Footer>
+                </Styled.Container>
+                <div></div>
+            </Styled.Sides>
         </Styled.Game>
     );
 };

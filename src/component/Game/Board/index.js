@@ -20,7 +20,7 @@ const Polygon = ({ fill }) => {
     );
 };
 
-const Board = ({ tagsData, putBetWithServer }) => {
+const Board = ({ tagsData = [], putBetWithServer = () => {}, canBet = true }) => {
     const slots = [tiger, calabash, chicken, shrimp, fish, crab];
     const color = [
         ['#A1CAE2', '#D7E9F7', '#D6E5FA'],
@@ -51,20 +51,22 @@ const Board = ({ tagsData, putBetWithServer }) => {
                             <Styled.Icon>
                                 <img src={slot} alt={slot} />
                             </Styled.Icon>
-                            <Styled.TagContainer>
-                                {Object.entries(tagsData[index][0]).map(([key, value]) => {
-                                    const bet = value.bet;
-                                    return (
-                                        <Styled.TagShadow
-                                            key={key}
-                                            position={{ x: value.x || 0, y: value.y || 0 }}
-                                            bet={bet}
-                                        >
-                                            <Styled.Tag bet={bet}>{bet}</Styled.Tag>
-                                        </Styled.TagShadow>
-                                    );
-                                })}
-                            </Styled.TagContainer>
+                            {canBet ? (
+                                <Styled.TagContainer>
+                                    {Object.entries(tagsData[index][0]).map(([key, value]) => {
+                                        const bet = value.bet;
+                                        return (
+                                            <Styled.TagShadow
+                                                key={key}
+                                                position={{ x: value.x || 0, y: value.y || 0 }}
+                                                bet={bet}
+                                            >
+                                                <Styled.Tag bet={bet}>{bet}</Styled.Tag>
+                                            </Styled.TagShadow>
+                                        );
+                                    })}
+                                </Styled.TagContainer>
+                            ) : null}
                         </Styled.Plate>
                     </Styled.Slot>
                 );
