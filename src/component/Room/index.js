@@ -38,7 +38,6 @@ function Room() {
                 setRoomList(result.data);
             }
         } catch (error) {
-            console.log(error);
             Error('Lỗi server');
         }
     }, []);
@@ -88,7 +87,7 @@ function Room() {
                         <Styled.RoomItem key={index}>
                             <RoomCard
                                 roomInfo={room}
-                                index={index + 1}
+                                index={index}
                                 bgrImage={bgrImageList[index % 6]}
                                 fetchingAllRooms={fetchingAllRooms}
                             />
