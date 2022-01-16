@@ -170,7 +170,7 @@ const Game = () => {
         <Styled.Game>
             <RollStage isShow={isRoll} diceFace={diceFace} />
             <Styled.Container>
-                <Styled.Footer justify="flex-start">
+                <Styled.Footer justify="flex-start" top={8}>
                     <Styled.Button>
                         <span>coin: {gold}</span>
                     </Styled.Button>
@@ -185,7 +185,7 @@ const Game = () => {
                 <Styled.View>
                     <Board tagsData={tagsData} putBetWithServer={putBetWithServer} />
                 </Styled.View>
-                <Styled.Footer justify="flex-end">
+                <Styled.Footer justify="flex-end" bottom={8}>
                     <Styled.Button>
                         <span>{playerCount} players</span>
                     </Styled.Button>

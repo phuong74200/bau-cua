@@ -25,6 +25,24 @@ const Footer = styled.div`
     justify-content: ${({ justify }) => justify || 'space-between'};
     align-items: center;
     gap: 10px;
+    z-index: 1;
+
+    @media (max-width: 1280px) {
+        position: sticky;
+        top: ${({ top }) => top}px;
+        left: ${({ left }) => left}px;
+        bottom: ${({ bottom }) => bottom}px;
+        right: ${({ right }) => right}px;
+        justify-content: space-between;
+    }
+
+    @media (max-width: 768px) {
+        position: sticky;
+        top: ${({ top }) => top}px;
+        left: ${({ left }) => left}px;
+        bottom: ${({ bottom }) => bottom}px;
+        right: ${({ right }) => right}px;
+    }
 `;
 
 const View = styled.div`

@@ -38,7 +38,7 @@ const Board = ({ tagsData, putBetWithServer }) => {
                     <Styled.Slot
                         key={index}
                         onClick={() => {
-                            putBetWithServer(index, 5   );
+                            putBetWithServer(index, 5);
                         }}
                     >
                         <Styled.Plate hoverColor={color[index][2]}>
