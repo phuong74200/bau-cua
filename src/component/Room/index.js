@@ -45,7 +45,7 @@ function Room() {
 
     useEffect(() => {
         if (userData.role && userData.role !== ADMIN_ROLE && localStorage.getItem('roomID')) {
-            navigate('/game');
+            navigate(`/game?roomID=${localStorage.getItem('roomID')}`);
             return;
         }
         fetchingAllRooms();
