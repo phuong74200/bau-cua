@@ -9,29 +9,37 @@ import socket from './socket';
 
 const seedrandom = require('seedrandom');
 
-const getRandomInt = (min, max) => {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1) + min);
-}
-
 const Game = () => {
     const dices = [useState(), useState(), useState()];
     const tagsData = [
-        useState({
-            admin: {
-                bet: 300,
-                x: 30,
-                y: 30,
-            },
-        }),
+        useState({}),
         useState({}),
         useState({}),
         useState({}),
         useState({}),
         useState({}),
     ];
-    const [gold, setGold] = useState(2000);
+
+    const [gold, setGold] = useState(0);
+    const [name, setName] = useState('');
+
+    useEffect(() => {
+        axios
+            .get('http://localhost:5000/user', {
+                headers: {
+                    Authorization: 'Bearer ' + localStorage.getItem('token'),
+                },
+            })
+            .then((res) => {
+                const name = res.data.name;
+                const coin = res.data.coin;
+
+                setGold(coin);
+                setName(name);
+            })
+            .catch((error) => {});
+    }, []);
+
     const playing = {};
     const [playerCount, setPlayerCount] = useState(0);
 
@@ -83,14 +91,14 @@ const Game = () => {
         const bet = new Array(6).fill(0);
         bet[position] = betValue;
         axios.post(
-            'http://localhost:5000/1/bet',
+            'http://localhost:5000/room/1/bet',
             {
                 bet: bet,
             },
             {
                 headers: {
                     'Content-Type': 'application/json',
-                    authorization: localStorage.getItem('authorization') || 'fuong',
+                    Authorization: 'Bearer ' + localStorage.getItem('token'),
                 },
             }
         );
@@ -118,7 +126,14 @@ const Game = () => {
     return (
         <Styled.Game>
             <Styled.Container>
-                <div></div>
+                <Styled.Footer>
+                    <div>
+                        Gold: <span>{gold}</span>
+                    </div>
+                    <div>
+                        <span>{name}</span>
+                    </div>
+                </Styled.Footer>
                 <Styled.View>
                     <Board tagsData={tagsData} putBetWithServer={putBetWithServer} />
                 </Styled.View>

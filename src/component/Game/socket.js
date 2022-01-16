@@ -1,7 +1,7 @@
 import io from 'socket.io-client';
 
 const IP = 'localhost';
-const PORT = 5000;
+const PORT = 3000;
 
 const socket = io(`${IP}:${PORT}`);
 

@@ -18,10 +18,9 @@ const Container = styled.div`
 
 const Footer = styled.div`
     width: 100%;
-    height: 50px;
+    height: 100%;
     display: flex;
     box-sizing: border-box;
-    padding: 8px;
     justify-content: space-between;
     align-items: center;
 `;
