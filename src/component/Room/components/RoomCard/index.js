@@ -41,7 +41,7 @@ function RoomCard({ bgrImage, roomInfo, index, fetchingAllRooms }) {
     const handleClickJoin = async () => {
         if (userData.role === ADMIN_ROLE) {
             localStorage.setItem('roomID', roomInfo._id);
-            navigate('/game');
+            navigate(`/game/${roomInfo._id}`);
             return;
         }
 

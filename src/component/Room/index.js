@@ -29,10 +29,9 @@ function Room() {
     const navigate = useNavigate();
 
     const [isShowing, toggle, openDialog, closeDialog] = useDialog(false);
-    const [roomList, setRoomList] = useState([1, 2, 3, 4, 5, 6]);
+    const [roomList, setRoomList] = useState([]);
 
     const fetchingAllRooms = useCallback(async () => {
-        if (userData.role !== ADMIN_ROLE) return;
         try {
             let result = await roomApi.getAllRooms();
             if (result) {
@@ -42,7 +41,7 @@ function Room() {
             console.log(error);
             Error('Lỗi server');
         }
-    }, [userData.role]);
+    }, []);
 
     useEffect(() => {
         if (userData.role && userData.role !== ADMIN_ROLE && localStorage.getItem('roomID')) {

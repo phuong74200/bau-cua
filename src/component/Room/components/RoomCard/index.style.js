@@ -39,10 +39,24 @@ export const CardImage = styled.div`
     aspect-ratio: 3/2;
 `;
 export const CardContent = styled.div`
-    text-align: center;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 
     & > h3 {
+        width: 90%;
+        height: 3.6rem;
         margin: 0.4rem 0;
+        line-height: 1.8rem;
+        text-align: center;
+
+        display: block;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
     }
 `;
 export const CardAction = styled.div`

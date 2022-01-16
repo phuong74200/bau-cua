@@ -45,7 +45,7 @@ const Game = () => {
                 setName(data.name);
                 setRole(data.role);
             })
-            .catch((error) => { });
+            .catch((error) => {});
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
