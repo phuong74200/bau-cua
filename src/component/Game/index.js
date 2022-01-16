@@ -7,6 +7,8 @@ import Dice from './Dice';
 import * as Styled from './index.style';
 import socket from './socket';
 
+import useFetchData from './hook';
+
 const seedrandom = require('seedrandom');
 
 const Game = () => {
@@ -23,22 +25,6 @@ const Game = () => {
     const [gold, setGold] = useState(0);
     const [name, setName] = useState('');
 
-    useEffect(() => {
-        axios
-            .get('http://localhost:5000/user', {
-                headers: {
-                    Authorization: 'Bearer ' + localStorage.getItem('token'),
-                },
-            })
-            .then((res) => {
-                const name = res.data.name;
-                const coin = res.data.coin;
-
-                setGold(coin);
-                setName(name);
-            })
-            .catch((error) => {});
-    }, []);
 
     const playing = {};
     const [playerCount, setPlayerCount] = useState(0);
@@ -86,6 +72,21 @@ const Game = () => {
             });
         }
     };
+
+    fetch('http://localhost:5000/user', {
+        method: 'GET', // or 'PUT'
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + localStorage.getItem('token'),
+        },
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data.coin);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
 
     const putBetWithServer = (position, betValue = 5) => {
         const bet = new Array(6).fill(0);
