@@ -1,54 +1,116 @@
 import React, { useState, useEffect } from 'react';
 
+import axios from 'axios';
+
 import Board from './Board';
 import Dice from './Dice';
-import Rule from './Rule';
-import UserTool from './UserTool';
 import * as Styled from './index.style';
 import socket from './socket';
 
+const seedrandom = require('seedrandom');
+
+const getRandomInt = (min, max) => {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
 const Game = () => {
-    const diceFaces = ['cop', 'bau', 'ga', 'tom', 'ca', 'cua'];
+    const dices = [useState(), useState(), useState()];
+    const tagsData = [
+        useState({
+            admin: {
+                bet: 300,
+                x: 30,
+                y: 30,
+            },
+        }),
+        useState({}),
+        useState({}),
+        useState({}),
+        useState({}),
+        useState({}),
+    ];
+    const [gold, setGold] = useState(2000);
+    const playing = {};
+    const [playerCount, setPlayerCount] = useState(0);
 
-    const [dice1, setDice1] = useState({ x: 0, y: 0 });
-    const [dice2, setDice2] = useState({ x: 0, y: 0 });
-    const [dice3, setDice3] = useState({ x: 0, y: 0 });
+    const scale = (number, inMin, inMax, outMin, outMax) => {
+        return ((number - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+    };
 
-    const [gold, setGold] = useState(20);
+    const putBet = (position, data) => {
+        const matcher = ['tiger', 'calabash', 'chicken', 'shrimp', 'fish', 'crab'];
+        const posIndex = typeof position === 'String' ? matcher[position] : position;
+        const set = tagsData[posIndex][1];
+        const user = data.user;
+        const betValue = data.bet;
 
-    const kick = (face, setDice) => {
-        const direction = {
-            cop: [0, 0],
-            tom: [90, 0],
-            cua: [180, 0],
-            bau: [270, 0],
-            ca: [0, 90],
-            ga: [0, 270],
-        };
+        playing[user] = null;
+        setPlayerCount(Object.keys(playing).length);
 
-        const x =
-            direction[face][0] === 0 ? Math.floor(Math.random() * 20) * 360 : direction[face][0];
-        const y =
-            direction[face][1] === 0 ? Math.floor(Math.random() * 20) * 360 : direction[face][1];
+        if (gold >= betValue) {
+            setGold(gold - betValue);
+            set((preState) => {
+                const x = ~~scale(
+                    seedrandom(user + 'x' + position.toString())() * 100,
+                    0,
+                    100,
+                    10,
+                    90
+                );
+                const y = ~~scale(
+                    seedrandom(user + 'y' + position.toString())() * 100,
+                    0,
+                    100,
+                    10,
+                    90
+                );
+                return {
+                    ...preState,
+                    [user]: {
+                        bet: (preState[user] ? preState[user].bet : 0) + betValue,
+                        self: true,
+                        x: preState[user] ? preState[user].x : x,
+                        y: preState[user] ? preState[user].y : y,
+                    },
+                };
+            });
+        }
+    };
 
-        setDice({ x: x * 10, y: y * 10 });
+    const putBetWithServer = (position, betValue = 5) => {
+        const bet = new Array(6).fill(0);
+        bet[position] = betValue;
+        axios.post(
+            'http://localhost:5000/1/bet',
+            {
+                bet: bet,
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    authorization: localStorage.getItem('authorization') || 'fuong',
+                },
+            }
+        );
     };
 
     useEffect(() => {
+        putBet(1, { user: 'fuong' });
+
         const listener = (message) => {
-            const room = message.room;
-            if (message.type === 'roll') {
-                if (room === 1) {
-                    const roll = message.rollResult;
-                    kick(diceFaces[roll[0]], setDice1);
-                    kick(diceFaces[roll[1]], setDice2);
-                    kick(diceFaces[roll[2]], setDice3);
-                }
+            const TYPE = message.type;
+            if (TYPE === 'bet') {
+                const slot = message.data.bet;
+                slot.forEach((value, index) => {
+                    if (value > 0) {
+                        putBet(index, { user: message.data.user, bet: value });
+                    }
+                });
             }
         };
-
         socket.on('events', listener);
-
         return () => socket.off('events', listener);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -56,27 +118,18 @@ const Game = () => {
     return (
         <Styled.Game>
             <Styled.Container>
-                <Styled.Center>
-                    <Styled.Side>
-                        <Styled.ToolBar>
-                            <Styled.DiceContainer>
-                                <Dice size={70} roll={dice1} />
-                                <Dice size={70} roll={dice2} />
-                                <Dice size={70} roll={dice3} />
-                            </Styled.DiceContainer>
-                            <Styled.BtnContainer>
-                                <UserTool money={gold} />
-                            </Styled.BtnContainer>
-                        </Styled.ToolBar>
-                        <Styled.BoardContainer>
-                            <Board setGold={setGold} gold={gold} />
-                        </Styled.BoardContainer>
-                    </Styled.Side>
-                </Styled.Center>
-                <Styled.CenterVertical>
-                    <Rule />
-                    <Styled.FakeRank>Ranking goes there</Styled.FakeRank>
-                </Styled.CenterVertical>
+                <div></div>
+                <Styled.View>
+                    <Board tagsData={tagsData} putBetWithServer={putBetWithServer} />
+                </Styled.View>
+                <Styled.Footer>
+                    <div>
+                        Player: <span>{playerCount}</span>
+                    </div>
+                    <div>
+                        RoomID: <span>1</span>
+                    </div>
+                </Styled.Footer>
             </Styled.Container>
         </Styled.Game>
     );

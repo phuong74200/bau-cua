@@ -1,43 +1,24 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 
-import cop from '../../../assets/1-cop.jpg';
-import bau from '../../../assets/2-bau.jpg';
-import ga from '../../../assets/3-ga.jpg';
-import tom from '../../../assets/4-tom.jpg';
-import ca from '../../../assets/5-ca.jpg';
-import cua from '../../../assets/6-cua.jpg';
+import calabash from '../../../assets/_pack/calabash.png';
+import chicken from '../../../assets/_pack/chicken.png';
+import crab from '../../../assets/_pack/crab.png';
+import fish from '../../../assets/_pack/fish.png';
+import shrimp from '../../../assets/_pack/shrimp.png';
+import tiger from '../../../assets/_pack/tiger.png';
 import * as Styled from './index.style';
 
-/*
-    1: tiger
-    2: gourd
-    3: chicken
-    4: shrimp
-    5: fish
-    6: crab
-*/
-
-const Dice = ({ size, roll }) => {
-    const diceSize = size || 200;
-
-    const ref = useRef();
-
-    const faces = {
-        front: cop,
-        top: bau,
-        right: ga,
-        bottom: tom,
-        left: ca,
-        back: cua,
-    };
+const Dice = ({ size, rotate }) => {
+    const faces = [calabash, chicken, fish, crab, shrimp, tiger];
+    const position = ['front', 'back', 'left', 'right', 'top', 'bottom'];
 
     return (
-        <Styled.Container size={diceSize}>
-            <Styled.Cube size={diceSize} ref={ref} rotate={roll}>
-                {Object.keys(faces).map((face) => {
+        <Styled.Container size={size || 200}>
+            <Styled.Cube size={size || 200} rotate={rotate}>
+                {faces.map((face, index) => {
                     return (
-                        <div key={face} className={face}>
-                            <img src={faces[face]} />
+                        <div key={index} className={position[index]}>
+                            <img src={face} />
                         </div>
                     );
                 })}
