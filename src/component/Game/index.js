@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import axios from 'axios';
+import { useSearchParams } from 'react-router-dom';
 
 import Admin from './AdminBar';
 import Board from './Board';
@@ -21,25 +22,32 @@ const Game = () => {
         useState({}),
     ];
 
+    const _axios = axios.create({
+        baseURL: 'http://localhost:5000/',
+        timeout: 1000,
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + localStorage.getItem('token'),
+        },
+    });
+
     const [gold, setGold] = useState(1000);
     const [name, setName] = useState('username');
     const [role, setRole] = useState('user');
+    const [searchParams, setSearchParams] = useSearchParams();
 
-    // useEffect(() => {
-    //     axios
-    //         .get('http://localhost:5000/user', {
-    //             headers: {
-    //                 Authorization: 'Bearer ' + localStorage.getItem('token'),
-    //             },
-    //         })
-    //         .then((res) => {
-    //             const data = res.data.data;
-    //             setGold(data.coin);
-    //             setName(data.name);
-    //             setRole(data.role);
-    //         })
-    //         .catch((error) => { });
-    // }, []);
+    useEffect(() => {
+        _axios
+            .get('/user')
+            .then((res) => {
+                const data = res.data.data;
+                setGold(data.coin);
+                setName(data.name);
+                setRole(data.role);
+            })
+            .catch((error) => { });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const playing = {};
     const [playerCount, setPlayerCount] = useState(0);
@@ -94,7 +102,7 @@ const Game = () => {
         const bet = new Array(6).fill(0);
         bet[position] = betValue;
         axios.post(
-            'http://localhost:5000/room/1/bet',
+            `room/${searchParams.get('roomID')}/bet`,
             {
                 bet: bet,
             },
@@ -155,6 +163,16 @@ const Game = () => {
         setDiceFace(face);
 
         setTimeout(() => {
+            _axios
+                .get('/user')
+                .then((res) => {
+                    const data = res.data.data;
+                    setGold(data.coin);
+                    setName(data.name);
+                    setRole(data.role);
+                })
+                .catch((error) => {});
+            // eslint-disable-next-line react-hooks/exhaustive-deps
             setRoll(false);
             setTimeout(() => {
                 setDiceFace([
