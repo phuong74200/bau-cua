@@ -3,13 +3,14 @@ import React from 'react';
 import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
 
+import * as CONFIG from '../config';
 import * as Styled from './index.style';
 
 const Roll = () => {
     const [searchParams, setSearchParams] = useSearchParams();
 
     const _axios = axios.create({
-        baseURL: 'http://localhost:5000/',
+        baseURL: CONFIG.BE_URL,
         timeout: 1000,
         headers: {
             Authorization: 'Bearer ' + localStorage.getItem('token'),
@@ -28,7 +29,7 @@ const EndGame = () => {
     const [searchParams, setSearchParams] = useSearchParams();
 
     const _axios = axios.create({
-        baseURL: 'http://localhost:5000/',
+        baseURL: CONFIG.BE_URL,
         timeout: 1000,
         headers: {
             Authorization: 'Bearer ' + localStorage.getItem('token'),

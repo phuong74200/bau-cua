@@ -7,6 +7,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import * as Admin from './AdminBar';
 import Board from './Board';
 import RollStage from './RollStage';
+import * as CONFIG from './config';
 import * as Styled from './index.style';
 import socket from './socket';
 
@@ -26,7 +27,7 @@ const Game = () => {
     ];
 
     const _axios = axios.create({
-        baseURL: 'http://localhost:5000/',
+        baseURL: CONFIG.BE_URL,
         timeout: 1000,
         headers: {
             'Content-Type': 'application/json',
