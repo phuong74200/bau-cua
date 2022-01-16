@@ -75,13 +75,15 @@ export const Cube = styled.div`
         height: 100%;
         width: 100%;
         color: #fff;
-        border: 2px solid #000;
+        border: 1px solid #000;
+        border-radius: 5px;
+        /* background-color: #fff; */
     }
 `;
 export const Front = styled.div`
     background: #000;
     transform: translateZ(0px);
-    background-color: red;
+    background-color: #a1cae2;
 
     ${down('md')} {
         transform: translateZ(-50px);
@@ -90,29 +92,29 @@ export const Front = styled.div`
 export const Back = styled.div`
     background: #000;
     transform: translateZ(-100px) rotateY(180deg);
-    background-color: yellow;
+    background-color: #a685e2;
 `;
 export const Top = styled.div`
     background: #000;
     transform-origin: top center;
     transform: rotateX(-270deg) translateY(-100px);
-    background-color: green;
+    background-color: #ffb677;
 `;
 export const Left = styled.div`
     background: #000;
     transform-origin: center left;
     transform: rotateY(270deg) translateX(-100px);
-    background-color: blue;
+    background-color: #ffc4d0;
 `;
 export const Right = styled.div`
     background: #000;
     transform-origin: top right;
     transform: rotateY(-270deg) translateX(100px);
-    background-color: orange;
+    background-color: #ffaaa5;
 `;
 export const Bottom = styled.div`
     background: #000;
     transform-origin: bottom center;
     transform: rotateX(270deg) translateY(100px);
-    background-color: violet;
+    background-color: #caf7e3;
 `;

@@ -27,7 +27,7 @@ export const privateRouters = [
         restrict: true,
     },
     {
-        path: '/game/:roomId',
+        path: '/game/*',
         name: 'game',
         component: <Game />,
         exact: true,

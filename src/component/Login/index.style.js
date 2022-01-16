@@ -3,10 +3,7 @@ import styled from 'styled-components';
 
 export const Login = styled.div`
     height: auto;
-    width: 100%;
-    aspect-ratio: 3/2;
-    background-size: cover;
-    background-repeat: no-repeat;
+    width: 100vw;
 
     ${down('md')} {
         height: 100vh;
@@ -15,11 +12,22 @@ export const Login = styled.div`
     }
 `;
 
+export const BoardBackground = styled.div`
+    width: 100%;
+    & > div {
+        width: 100vw;
+        height: auto;
+        max-width: none;
+        min-height: 100vh;
+    }
+`;
+
 export const LoginMain = styled.div`
     position: fixed;
     top: 0;
     width: 100%;
     height: 100%;
+    z-index: 10;
 
     display: flex;
     flex-direction: column;

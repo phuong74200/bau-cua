@@ -6,12 +6,13 @@ import { useNavigate } from 'react-router-dom';
 import { down } from 'styled-breakpoints';
 import { useBreakpoint } from 'styled-breakpoints/react-styled';
 
-import cop from '../../assets/images/1-cop.jpg';
-import bau from '../../assets/images/2-bau.jpg';
-import ga from '../../assets/images/3-ga.jpg';
-import tom from '../../assets/images/4-tom.jpg';
-import ca from '../../assets/images/5-ca.jpg';
-import cua from '../../assets/images/6-cua.jpg';
+import bau from '../../assets/_pack/calabash.png';
+import ga from '../../assets/_pack/chicken.png';
+import cua from '../../assets/_pack/crab.png';
+import ca from '../../assets/_pack/fish.png';
+import tom from '../../assets/_pack/shrimp.png';
+import cop from '../../assets/_pack/tiger.png';
+import bgrImage from '../../assets/images/background.PNG';
 import bannerBottom from '../../assets/images/banner_bottom.png';
 import bannerLeft from '../../assets/images/banner_left.png';
 import bannerRight from '../../assets/images/banner_right.png';
@@ -21,6 +22,7 @@ import { Error, Success } from '../../helpers/notify';
 import authApi from '../../services/api/authApi';
 import { PopupGoogleLogin } from '../../services/authentication/';
 import { updateIns } from '../../utils/apiCaller';
+import Board from '../Game/Board';
 import ButtonBase from './components/Button/ButtonBase';
 import Dice from './components/Dice';
 import * as Styled from './index.style.js';
@@ -64,7 +66,11 @@ const Login = () => {
     };
 
     return (
-        <Styled.Login style={{ backgroundImage: `url(${baucua})` }}>
+        <Styled.Login>
+            <Styled.BoardBackground>
+                <Board canBet={false} />
+            </Styled.BoardBackground>
+
             <Styled.BannerLeft>
                 <img src={bannerLeft} alt="banner left"></img>
             </Styled.BannerLeft>
@@ -75,17 +81,13 @@ const Login = () => {
                 <img src={background_banner_bottom} alt="banner bottom"></img>
                 <div style={{ backgroundImage: `url(${bannerBottom})` }}></div>
             </Styled.BannerBottom>
-            <Styled.LoginMain>
-                {/* <Styled.ButtonLoginWrapper>
-                    <ButtonLogin handleClick={openDialog} />
-                </Styled.ButtonLoginWrapper> */}
 
+            <Styled.LoginMain>
                 <ButtonBase
                     width={isMobile ? '160px' : '300px'}
                     padding={isMobile ? '8px' : '16px'}
                     background_color="#e63a0a"
                     text_color="white"
-                    border="1px solid #fff"
                     animation={true}
                     onClick={handleBtnLogin()}
                 >

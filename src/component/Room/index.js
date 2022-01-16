@@ -3,12 +3,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import ga from '../../assets/3-ga.jpg';
-import cop from '../../assets/images/1-cop.jpg';
-import bau from '../../assets/images/2-bau.jpg';
-import tom from '../../assets/images/4-tom.jpg';
-import ca from '../../assets/images/5-ca.jpg';
-import cua from '../../assets/images/6-cua.jpg';
+import bau from '../../assets/_pack/calabash.png';
+import ga from '../../assets/_pack/chicken.png';
+import cua from '../../assets/_pack/crab.png';
+import ca from '../../assets/_pack/fish.png';
+import tom from '../../assets/_pack/shrimp.png';
+import cop from '../../assets/_pack/tiger.png';
 import ButtonBase from '../../component/Login/components/Button/ButtonBase';
 import Dialog from '../../component/Login/components/Dialog';
 import config from '../../configurations';

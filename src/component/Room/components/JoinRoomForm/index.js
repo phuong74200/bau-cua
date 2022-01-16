@@ -19,7 +19,7 @@ function JoinRoomForm({ fetchingAllRooms = () => {}, roomId, setIsOpenOverlay })
             let result = await roomApi.joinRoom(value);
             localStorage.setItem('roomID', value);
             Success('Vào phòng thành công.');
-            navigate(`/game/${value}`);
+            navigate(`/game?roomID=${value}`);
         } catch (error) {
             console.log(error);
             if (error.code === 400) {
