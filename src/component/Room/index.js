@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import ga from '../../assets/3-ga.jpg';
 import cop from '../../assets/images/1-cop.jpg';
@@ -8,7 +9,6 @@ import bau from '../../assets/images/2-bau.jpg';
 import tom from '../../assets/images/4-tom.jpg';
 import ca from '../../assets/images/5-ca.jpg';
 import cua from '../../assets/images/6-cua.jpg';
-import baucua from '../../assets/images/baucua.jpg';
 import ButtonBase from '../../component/Login/components/Button/ButtonBase';
 import Dialog from '../../component/Login/components/Dialog';
 import config from '../../configurations';
@@ -26,11 +26,13 @@ function Room() {
     const bgrImageList = [cop, bau, ga, tom, ca, cua];
     const userData = useSelector(userDataSelector);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const [isShowing, toggle, openDialog, closeDialog] = useDialog(false);
-    const [roomList, setRoomList] = useState([]);
+    const [roomList, setRoomList] = useState([1, 2, 3, 4, 5, 6]);
 
-    const fetchingAllRooms = async () => {
+    const fetchingAllRooms = useCallback(async () => {
+        if (userData.role !== ADMIN_ROLE) return;
         try {
             let result = await roomApi.getAllRooms();
             if (result) {
@@ -40,10 +42,15 @@ function Room() {
             console.log(error);
             Error('Lỗi server');
         }
-    };
+    }, [userData.role]);
+
     useEffect(() => {
+        if (userData.role && userData.role !== ADMIN_ROLE && localStorage.getItem('roomID')) {
+            navigate('/game');
+            return;
+        }
         fetchingAllRooms();
-    }, []);
+    }, [fetchingAllRooms, navigate, userData.role]);
 
     return (
         <Styled.Container>
