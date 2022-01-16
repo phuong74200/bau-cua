@@ -40,18 +40,12 @@ function RoomCard({ bgrImage, roomInfo, index, fetchingAllRooms }) {
 
     const handleClickJoin = async () => {
         if (userData.role === ADMIN_ROLE) {
+            localStorage.setItem('roomID', roomInfo._id);
             navigate('/game');
             return;
         }
 
-        try {
-            let result = await roomApi.joinRoom(roomInfo._id);
-            Success('Vào phòng thành công.');
-            navigate('/game');
-        } catch (error) {
-            console.log(error);
-            Error('Vào phòng thất bại.');
-        }
+        handleSelectOption('join');
     };
 
     return (
