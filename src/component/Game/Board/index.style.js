@@ -31,6 +31,7 @@ const Slot = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
 
     img {
         max-width: 100px;

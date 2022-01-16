@@ -5,7 +5,7 @@ import { useSearchParams } from 'react-router-dom';
 
 import * as Styled from './index.style';
 
-const Admin = () => {
+const Roll = () => {
     const [searchParams, setSearchParams] = useSearchParams();
 
     const _axios = axios.create({
@@ -17,19 +17,34 @@ const Admin = () => {
     });
 
     const rollToServer = () => {
-        _axios.get(`/room/${searchParams.get('roomID')}/roll`);
+        _axios.post(`/room/${searchParams.get('roomID')}/roll`, {
+            id: searchParams.get('roomID'),
+        });
     };
+    return <Styled.Button onClick={rollToServer}>Lắc bầu cua</Styled.Button>;
+};
+
+const EndGame = () => {
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    const _axios = axios.create({
+        baseURL: 'http://localhost:5000/',
+        timeout: 1000,
+        headers: {
+            Authorization: 'Bearer ' + localStorage.getItem('token'),
+        },
+    });
 
     const endGame = () => {
-        _axios.get(`/room/${searchParams.get('roomID')}/reset-and-get-rank`);
+        _axios.post(`/room/${searchParams.get('roomID')}/reset-and-get-rank`, {
+            id: searchParams.get('roomID'),
+        });
     };
-
     return (
-        <Styled.Container>
-            <Styled.Button onClick={rollToServer}>Roll Dice</Styled.Button>
-            <Styled.Button onClick={endGame}>End Game</Styled.Button>
-        </Styled.Container>
+        <Styled.Button onClick={endGame} bgColor="#FF7878">
+            Kết thúc
+        </Styled.Button>
     );
 };
 
-export default Admin;
+export { Roll, EndGame };
