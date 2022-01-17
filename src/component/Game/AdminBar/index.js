@@ -6,7 +6,7 @@ import { useSearchParams } from 'react-router-dom';
 import * as CONFIG from '../config';
 import * as Styled from './index.style';
 
-const Roll = () => {
+const Roll = ({ setRank }) => {
     const [searchParams, setSearchParams] = useSearchParams();
 
     const _axios = axios.create({
@@ -18,9 +18,19 @@ const Roll = () => {
     });
 
     const rollToServer = () => {
-        _axios.post(`/room/${searchParams.get('roomID')}/roll`, {
-            id: searchParams.get('roomID'),
-        });
+        _axios
+            .post(`/room/${searchParams.get('roomID')}/roll`, {
+                id: searchParams.get('roomID'),
+            })
+            .then((res) => {
+                _axios
+                    .post(`/room/${searchParams.get('roomID')}/reset-and-get-rank`, {
+                        id: searchParams.get('roomID'),
+                    })
+                    .then((ranking) => {
+                        setRank(ranking.data.data);
+                    });
+            });
     };
     return <Styled.Button onClick={rollToServer}>Lắc bầu cua</Styled.Button>;
 };
