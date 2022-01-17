@@ -19,7 +19,7 @@ const Cube = styled.div.attrs(({ rotate, size }) => ({
     transition: 7s cubic-bezier(0, 0.36, 0, 0.99);
 
     .back {
-        transform: translateZ(-${({ size }) => size / 2}px);
+        transform: translateZ(-${({ size }) => size / 2}px) scaleY(-1);
         background: #f6eabe;
     }
 
@@ -44,7 +44,7 @@ const Cube = styled.div.attrs(({ rotate, size }) => ({
     }
 
     .bottom {
-        transform: rotateX(90deg) translateZ(-${({ size }) => size / 2}px);
+        transform: rotateX(90deg) translateZ(-${({ size }) => size / 2}px) scaleY(-1);
         background: #d6e5fa;
     }
 

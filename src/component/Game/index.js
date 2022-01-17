@@ -53,6 +53,7 @@ const Game = () => {
     const [role, setRole] = useState('user');
     const [searchParams, setSearchParams] = useSearchParams();
     const [userBet, setUserBet] = useState([0, 0, 0, 0, 0, 0]);
+    const [fixItems, setFixItems] = useState({});
 
     useEffect(() => {
         _axios
@@ -179,25 +180,24 @@ const Game = () => {
         setDiceFace(face);
 
         setTimeout(() => {
+            const preCoin = gold;
             _axios
                 .get('/user')
                 .then((res) => {
                     const data = res.data.data;
                     setName(data.name);
                     setRole(data.role);
-                    setGold(() => {
-                        const sum = userBet.reduce((pre, cur) => pre + cur, 0);
-                        if (data.coin > sum && sum > 0) {
-                            toast.success(`You won ${data.coin - sum} coins`);
-                        } else {
-                            toast.error(`You lose ${sum - data.coin} coins`);
-                        }
+                    setGold((pre) => {
+                        const value = data.coin - pre;
+                        toast(`Bạn nhận được ${value} Đồng`);
                         return data.coin;
                     });
+                    tagsData.forEach((state) => {
+                        state[1]({});
+                    });
                 })
-                .catch((error) => {
-                    toast.error(error.response.data.message);
-                });
+                // eslint-disable-next-line prettier/prettier
+                .catch((error) => { });
             setRoll(false);
         }, 10000);
         setTimeout(() => {
@@ -206,7 +206,7 @@ const Game = () => {
                 [0, 0],
                 [0, 0],
             ]);
-        }, 14000);
+        }, 11000);
     };
 
     const copyRoomID = () => {
@@ -221,11 +221,16 @@ const Game = () => {
     return (
         <Styled.Game>
             <RollStage isShow={isRoll} diceFace={diceFace} />
+            <Styled.FixLayer>
+                {Object.entries(fixItems).map(([key, value]) => {
+                    return value;
+                })}
+            </Styled.FixLayer>
             <Styled.Sides>
                 <Styled.ToolBar>
                     <Styled.MiniBtn>
                         <span>{gold}</span>
-                        <div>Số lượng coin hiện đang có</div>
+                        <div>Số lượng Đồng hiện đang có</div>
                     </Styled.MiniBtn>
                     {role === 'admin' ? (
                         <Styled.MiniBtn
@@ -249,26 +254,31 @@ const Game = () => {
                             <div>Reset game (lấy rank và xóa room)</div>
                         </Styled.MiniBtn>
                     ) : null}
-                    <Styled.MiniBtn
-                        clickable
-                        onClick={() => {
-                            putBetWithServer(userBet);
-                        }}
-                    >
-                        <FontAwesomeIcon icon={faCheckSquare} />
-                        <div>Xác nhận đặt cược (không thể đặt lại)</div>
-                    </Styled.MiniBtn>
-                    <Styled.MiniBtn
-                        clickable
-                        onClick={() => {
-                            const sum = userBet.reduce((pre, cur) => pre + cur, 0);
-                            setUserBet(new Array(6).fill(0));
-                            setGold(() => gold + sum);
-                        }}
-                    >
-                        <FontAwesomeIcon icon={faRedo} />
-                        <div>Xác nhận đặt cược (không thể đặt lại)</div>
-                    </Styled.MiniBtn>
+                    {role === 'user' ? (
+                        <Styled.MiniBtn
+                            clickable
+                            onClick={() => {
+                                setUserBet(new Array(6).fill(0));
+                                putBetWithServer(userBet);
+                            }}
+                        >
+                            <FontAwesomeIcon icon={faCheckSquare} />
+                            <div>Xác nhận đặt cược (không thể đặt lại)</div>
+                        </Styled.MiniBtn>
+                    ) : null}
+                    {role === 'user' ? (
+                        <Styled.MiniBtn
+                            clickable
+                            onClick={() => {
+                                const sum = userBet.reduce((pre, cur) => pre + cur, 0);
+                                setUserBet(new Array(6).fill(0));
+                                setGold(() => gold + sum);
+                            }}
+                        >
+                            <FontAwesomeIcon icon={faRedo} />
+                            <div>Đặt lại</div>
+                        </Styled.MiniBtn>
+                    ) : null}
                     <Styled.MiniBtn
                         clickable
                         onClick={() => {
@@ -286,6 +296,7 @@ const Game = () => {
                     <Styled.Footer justify="space-between" top={8}>
                         <Styled.Box>
                             <Styled.TextField
+                                name="ROOM ID"
                                 readonly
                                 editable
                                 onClick={() => {
@@ -295,16 +306,19 @@ const Game = () => {
                             >
                                 {searchParams.get('roomID')}
                             </Styled.TextField>
+                            <Styled.TextField name={role.toUpperCase()}>{name}</Styled.TextField>
                         </Styled.Box>
                     </Styled.Footer>
                     <Styled.View>
                         <Board
+                            setFixItems={setFixItems}
                             tagsData={tagsData}
                             putBetWithServer={putBetWithServer}
                             setUserBet={setUserBet}
                             setGold={setGold}
                             gold={gold}
                             userBet={userBet}
+                            role={role}
                         />
                     </Styled.View>
                 </Styled.Container>

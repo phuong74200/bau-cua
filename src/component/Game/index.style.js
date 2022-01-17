@@ -84,7 +84,7 @@ const TextField = styled.div`
 
     ::before {
         position: absolute;
-        content: 'ROOM ID';
+        content: '${({ name }) => name}';
         width: auto;
         height: auto;
         background-color: white;
@@ -154,4 +154,13 @@ const MiniBtn = styled.div`
     }
 `;
 
-export { Game, Container, Footer, View, Button, Box, TextField, Sides, ToolBar, MiniBtn };
+const FixLayer = styled.div`
+    position: fixed;
+    width: 100vw;
+    pointer-events: none;
+    user-select: none;
+    z-index: 200;
+    height: 100vh;
+`;
+
+export { Game, Container, Footer, View, Button, Box, TextField, Sides, ToolBar, MiniBtn, FixLayer };

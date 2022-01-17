@@ -13,7 +13,7 @@ const Container = styled.div`
     align-items: center;
     display: flex;
     transform: translateY(${({ isShow }) => (isShow ? '0' : '-100%')});
-    z-index: 10;
+    z-index: 100;
     transition: all 2s linear;
 `;
 
