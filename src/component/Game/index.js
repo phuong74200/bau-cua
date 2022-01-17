@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 
+import { Success, Error } from '../../helpers/notify';
+import { signOut } from '../Login/loginSlice';
 import * as Admin from './AdminBar';
 import BetBar from './BetBar';
 import Board from './Board';
@@ -24,6 +27,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 const seedrandom = require('seedrandom');
 
 const Game = () => {
+    const navigateTo = useNavigate();
+    const dispatch = useDispatch();
     const dices = [useState(), useState(), useState()];
     const tagsData = [
         useState({}),
@@ -108,10 +113,20 @@ const Game = () => {
                 }
             )
             .then((res) => {
-                toast.success('Đặt cược thành công!');
+                Success('Đặt cược thành công!');
             })
             .catch((e) => {
                 toast.error('Không thể đặt cược');
+                const data = e.response.data;
+                Error(data.message);
+                if (
+                    e.response.status === 400 &&
+                    e.response.data.message === 'User must join room before bet'
+                ) {
+                    localStorage.removeItem('roomID');
+                    Error('Bạn hãy tham gia phòng để bắt đầu trò chơi.');
+                    navigateTo('/room');
+                }
             });
     };
 
@@ -198,8 +213,6 @@ const Game = () => {
         navigator.clipboard.writeText(searchParams.get('roomID'));
     };
 
-    const navigateTo = useNavigate();
-
     const logout = () => {
         localStorage.removeItem('token');
         navigateTo('/login');
@@ -277,7 +290,7 @@ const Game = () => {
                                 editable
                                 onClick={() => {
                                     copyRoomID();
-                                    toast.success('Room id copied to clipboard!');
+                                    Success('RoomID đã được sao chép!');
                                 }}
                             >
                                 {searchParams.get('roomID')}
