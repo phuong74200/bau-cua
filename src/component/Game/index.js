@@ -220,6 +220,9 @@ const Game = () => {
                         )
                     );
                     setUserBet([0, 0, 0, 0, 0, 0]);
+                    tagsData.forEach((state) => {
+                        state[1]({});
+                    });
                     openDialog();
                 })
                 // eslint-disable-next-line prettier/prettier
