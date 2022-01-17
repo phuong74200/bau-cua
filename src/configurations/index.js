@@ -1,5 +1,5 @@
 export default {
-    backendURL: 'http://localhost:5000',
+    backendURL: 'https://api.ohtgo.me/',
     firebaseConfig: {
         apiKey: 'AIzaSyBJ85ixLJSfvKfzKEobXgTDBg8Dfxn2fSI',
         authDomain: 'baucua-fcode.firebaseapp.com',
