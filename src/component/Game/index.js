@@ -67,6 +67,7 @@ const Game = () => {
     const [role, setRole] = useState('user');
     const [searchParams, setSearchParams] = useSearchParams();
     const [fixItems, setFixItems] = useState({});
+    const [confirm, setConfirm] = useState(false);
 
     useEffect(() => {
         _axios
@@ -344,7 +345,9 @@ const Game = () => {
                             >
                                 {searchParams.get('roomID')}
                             </Styled.TextField>
-                            <Styled.TextField name={role.toUpperCase()}>{name}</Styled.TextField>
+                            <Styled.TextField name={role.toUpperCase()}>
+                                {name || 'admin'}
+                            </Styled.TextField>
                         </Styled.Box>
                     </Styled.Footer>
                     <Styled.View>
