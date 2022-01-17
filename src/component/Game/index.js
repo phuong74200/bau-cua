@@ -35,6 +35,7 @@ const Game = () => {
     const dispatch = useDispatch();
 
     const [resultData, setResultData] = useState([]);
+    const [userBet, setUserBet] = useState([0, 0, 0, 0, 0, 0]);
 
     const [isShowing, toggle, openDialog, closeDialog] = useDialog(false);
     const handleCloseResultDialog = () => {
@@ -66,8 +67,8 @@ const Game = () => {
     const [name, setName] = useState('username');
     const [role, setRole] = useState('user');
     const [searchParams, setSearchParams] = useSearchParams();
-    const [userBet, setUserBet] = useState([0, 0, 0, 0, 0, 0]);
     const [fixItems, setFixItems] = useState({});
+    const [confirm, setConfirm] = useState(false);
 
     useEffect(() => {
         _axios
@@ -132,7 +133,7 @@ const Game = () => {
                 localStorage.setItem('userBet', JSON.stringify(userBet));
             })
             .catch((e) => {
-                toast.error('Không thể đặt cược');
+                Error('Không thể đặt cược');
                 const data = e.response.data;
                 Error(data.message);
                 if (
@@ -220,6 +221,9 @@ const Game = () => {
                         )
                     );
                     setUserBet([0, 0, 0, 0, 0, 0]);
+                    tagsData.forEach((state) => {
+                        state[1]({});
+                    });
                     openDialog();
                 })
                 // eslint-disable-next-line prettier/prettier
@@ -322,9 +326,7 @@ const Game = () => {
                     ) : null}
                     <Styled.MiniBtn
                         clickable
-                        onClick={() => {
-                            logout();
-                        }}
+                        onClick={() => dispatch(signOut())}
                         style={{
                             marginTop: 'auto',
                         }}
@@ -347,7 +349,9 @@ const Game = () => {
                             >
                                 {searchParams.get('roomID')}
                             </Styled.TextField>
-                            <Styled.TextField name={role.toUpperCase()}>{name}</Styled.TextField>
+                            <Styled.TextField name={role.toUpperCase()}>
+                                {name || 'admin'}
+                            </Styled.TextField>
                         </Styled.Box>
                     </Styled.Footer>
                     <Styled.View>

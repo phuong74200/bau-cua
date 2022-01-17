@@ -8,7 +8,7 @@ const Game = styled.div`
     align-items: center;
     user-select: none;
     font-family: Montserrat;
-    margin: 3.2rem;
+    margin: 3.2rem 0;
 `;
 
 const Container = styled.div`
@@ -124,7 +124,7 @@ const MiniBtn = styled.div`
     position: relative;
     box-sizing: border-box;
     background: ${({ clickable }) => (clickable ? '#616161' : 'white')};
-    border: 2px solid #616161;
+    border: 1px solid #616161;
     color: ${({ clickable }) => (clickable ? '#f2f2f2' : '#616161')};
     cursor: ${({ clickable }) => (clickable ? 'pointer' : 'auto')};
 

@@ -5,6 +5,6 @@ import io from 'socket.io-client';
 const IP = CONFIG.SOCKET_URL;
 const PORT = CONFIG.SOCKET_PORT;
 
-const socket = io(`${IP}:${PORT}` /*, { transports: ['websocket'] }*/);
+const socket = io(`${IP}:${PORT}`, { transports: ['websocket'] });
 
 export default socket;
