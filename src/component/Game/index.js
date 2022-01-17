@@ -1,22 +1,34 @@
 import React, { useState, useEffect } from 'react';
 
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 
+import { Success, Error } from '../../helpers/notify';
+import { signOut } from '../Login/loginSlice';
 import * as Admin from './AdminBar';
-import BettedBar from './BettedBar';
+import BetBar from './BetBar';
 import Board from './Board';
 import RollStage from './RollStage';
 import * as CONFIG from './config';
 import * as Styled from './index.style';
 import socket from './socket';
 
-import 'react-toastify/dist/ReactToastify.css';
+import {
+    faDice,
+    faSignOutAlt,
+    faCheckSquare,
+    faRedo,
+    faStopCircle,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const seedrandom = require('seedrandom');
 
 const Game = () => {
+    const navigateTo = useNavigate();
+    const dispatch = useDispatch();
     const dices = [useState(), useState(), useState()];
     const tagsData = [
         useState({}),
@@ -40,7 +52,8 @@ const Game = () => {
     const [name, setName] = useState('username');
     const [role, setRole] = useState('user');
     const [searchParams, setSearchParams] = useSearchParams();
-    const [userBet, setUsetBet] = useState([]);
+    const [userBet, setUserBet] = useState([0, 0, 0, 0, 0, 0]);
+    const [fixItems, setFixItems] = useState({});
 
     useEffect(() => {
         _axios
@@ -71,52 +84,27 @@ const Game = () => {
         const user = data.user;
         const betValue = data.bet;
 
-        playing[user] = null;
-        setPlayerCount(Object.keys(playing).length);
-
-        setGold((pre) => {
-            if (pre >= betValue) {
-                set((preState) => {
-                    const x = ~~scale(
-                        seedrandom(user + 'x' + position.toString())() * 100,
-                        0,
-                        100,
-                        10,
-                        90
-                    );
-                    const y = ~~scale(
-                        seedrandom(user + 'y' + position.toString())() * 100,
-                        0,
-                        100,
-                        10,
-                        90
-                    );
-                    return {
-                        ...preState,
-                        [user]: {
-                            bet: (preState[user] ? preState[user].bet : 0) + betValue,
-                            self: true,
-                            x: preState[user] ? preState[user].x : x,
-                            y: preState[user] ? preState[user].y : y,
-                        },
-                    };
-                });
-                return pre - betValue;
-            } else {
-                toast.error('Không đủ coin');
-            }
-            return pre;
+        set((preState) => {
+            const x = ~~scale(seedrandom(user + 'x' + position.toString())() * 100, 0, 100, 10, 90);
+            const y = ~~scale(seedrandom(user + 'y' + position.toString())() * 100, 0, 100, 10, 90);
+            return {
+                ...preState,
+                [user]: {
+                    bet: (preState[user] ? preState[user].bet : 0) + betValue,
+                    self: true,
+                    x: preState[user] ? preState[user].x : x,
+                    y: preState[user] ? preState[user].y : y,
+                },
+            };
         });
     };
 
-    const putBetWithServer = (position, betValue = 5) => {
-        const bet = new Array(6).fill(0);
-        bet[position] = betValue;
+    const putBetWithServer = (userBet) => {
         _axios
             .post(
                 `/room/${searchParams.get('roomID')}/bet`,
                 {
-                    bet: bet,
+                    bet: userBet,
                 },
                 {
                     headers: {
@@ -126,11 +114,20 @@ const Game = () => {
                 }
             )
             .then((res) => {
-                toast.success('Đặt cược thành công!');
+                Success('Đặt cược thành công!');
             })
             .catch((e) => {
+                toast.error('Không thể đặt cược');
                 const data = e.response.data;
-                toast.error(data.message);
+                Error(data.message);
+                if (
+                    e.response.status === 400 &&
+                    e.response.data.message === 'User must join room before bet'
+                ) {
+                    localStorage.removeItem('roomID');
+                    Error('Bạn hãy tham gia phòng để bắt đầu trò chơi.');
+                    navigateTo('/room');
+                }
             });
     };
 
@@ -183,41 +180,38 @@ const Game = () => {
         setDiceFace(face);
 
         setTimeout(() => {
+            const preCoin = gold;
             _axios
                 .get('/user')
                 .then((res) => {
                     const data = res.data.data;
-                    setGold((pre) => {
-                        if (data.coin > pre) {
-                            toast.success(`You won ${data.coin - pre} coins`);
-                        } else {
-                            toast.error(`You lose 5 coins`);
-                        }
-                        return data.coin;
-                    });
                     setName(data.name);
                     setRole(data.role);
+                    setGold((pre) => {
+                        const value = data.coin - pre;
+                        toast(`Bạn nhận được ${value} Đồng`);
+                        return data.coin;
+                    });
+                    tagsData.forEach((state) => {
+                        state[1]({});
+                    });
                 })
-                .catch((error) => {
-                    toast.error(error.response.data.message);
-                });
-            // eslint-disable-next-line react-hooks/exhaustive-deps
+                // eslint-disable-next-line prettier/prettier
+                .catch((error) => { });
             setRoll(false);
-            setTimeout(() => {
-                setDiceFace([
-                    [0, 0],
-                    [0, 0],
-                    [0, 0],
-                ]);
-            }, 5000);
         }, 10000);
+        setTimeout(() => {
+            setDiceFace([
+                [0, 0],
+                [0, 0],
+                [0, 0],
+            ]);
+        }, 11000);
     };
 
     const copyRoomID = () => {
         navigator.clipboard.writeText(searchParams.get('roomID'));
     };
-
-    const navigateTo = useNavigate();
 
     const logout = () => {
         localStorage.removeItem('token');
@@ -227,49 +221,108 @@ const Game = () => {
     return (
         <Styled.Game>
             <RollStage isShow={isRoll} diceFace={diceFace} />
+            <Styled.FixLayer>
+                {Object.entries(fixItems).map(([key, value]) => {
+                    return value;
+                })}
+            </Styled.FixLayer>
             <Styled.Sides>
+                <Styled.ToolBar>
+                    <Styled.MiniBtn>
+                        <span>{gold}</span>
+                        <div>Số lượng Đồng hiện đang có</div>
+                    </Styled.MiniBtn>
+                    {role === 'admin' ? (
+                        <Styled.MiniBtn
+                            onClick={() => {
+                                Admin.rollGame(searchParams.get('roomID'));
+                            }}
+                            clickable
+                        >
+                            <FontAwesomeIcon icon={faDice} />
+                            <div>Lắc bầu cua (admin only)</div>
+                        </Styled.MiniBtn>
+                    ) : null}
+                    {role === 'admin' ? (
+                        <Styled.MiniBtn
+                            onClick={() => {
+                                Admin.resetGame(searchParams.get('roomID'));
+                            }}
+                            clickable
+                        >
+                            <FontAwesomeIcon icon={faStopCircle} />
+                            <div>Reset game (lấy rank và xóa room)</div>
+                        </Styled.MiniBtn>
+                    ) : null}
+                    {role === 'user' ? (
+                        <Styled.MiniBtn
+                            clickable
+                            onClick={() => {
+                                setUserBet(new Array(6).fill(0));
+                                putBetWithServer(userBet);
+                            }}
+                        >
+                            <FontAwesomeIcon icon={faCheckSquare} />
+                            <div>Xác nhận đặt cược (không thể đặt lại)</div>
+                        </Styled.MiniBtn>
+                    ) : null}
+                    {role === 'user' ? (
+                        <Styled.MiniBtn
+                            clickable
+                            onClick={() => {
+                                const sum = userBet.reduce((pre, cur) => pre + cur, 0);
+                                setUserBet(new Array(6).fill(0));
+                                setGold(() => gold + sum);
+                            }}
+                        >
+                            <FontAwesomeIcon icon={faRedo} />
+                            <div>Đặt lại</div>
+                        </Styled.MiniBtn>
+                    ) : null}
+                    <Styled.MiniBtn
+                        clickable
+                        onClick={() => {
+                            logout();
+                        }}
+                        style={{
+                            marginTop: 'auto',
+                        }}
+                    >
+                        <FontAwesomeIcon icon={faSignOutAlt} />
+                        <div>Đăng xuất</div>
+                    </Styled.MiniBtn>
+                </Styled.ToolBar>
                 <Styled.Container>
                     <Styled.Footer justify="space-between" top={8}>
                         <Styled.Box>
-                            <Styled.Button>
-                                <span>coin: {gold}</span>
-                            </Styled.Button>
-                            {role === 'admin' ? (
-                                <Styled.Box>
-                                    <Admin.Roll />
-                                    <Admin.EndGame />
-                                </Styled.Box>
-                            ) : (
-                                <Styled.Button>{name}</Styled.Button>
-                            )}
-                        </Styled.Box>
-                        <Styled.Box>
-                            <Styled.Button bgColor="#FF7878" isClick onClick={logout}>
-                                <span>Đăng xuất</span>
-                            </Styled.Button>
                             <Styled.TextField
+                                name="ROOM ID"
                                 readonly
                                 editable
                                 onClick={() => {
                                     copyRoomID();
-                                    toast.success('Room id copied to clipboard!');
+                                    Success('RoomID đã được sao chép!');
                                 }}
                             >
                                 {searchParams.get('roomID')}
                             </Styled.TextField>
+                            <Styled.TextField name={role.toUpperCase()}>{name}</Styled.TextField>
                         </Styled.Box>
                     </Styled.Footer>
                     <Styled.View>
-                        <Board tagsData={tagsData} putBetWithServer={putBetWithServer} />
+                        <Board
+                            setFixItems={setFixItems}
+                            tagsData={tagsData}
+                            putBetWithServer={putBetWithServer}
+                            setUserBet={setUserBet}
+                            setGold={setGold}
+                            gold={gold}
+                            userBet={userBet}
+                            role={role}
+                        />
                     </Styled.View>
-                    <Styled.Footer justify="flex-end" bottom={8}>
-                        <Styled.Button status="close">
-                            <span>Opening</span>
-                        </Styled.Button>
-                        <BettedBar list={userBet} />
-                    </Styled.Footer>
                 </Styled.Container>
-                <div></div>
+                <BetBar list={userBet} />
             </Styled.Sides>
         </Styled.Game>
     );

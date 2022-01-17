@@ -12,7 +12,7 @@ const Game = styled.div`
 
 const Container = styled.div`
     display: grid;
-    grid-template-rows: 50px 1fr 50px;
+    grid-template-rows: 50px 1fr;
     grid-template-columns: 1fr;
     gap: 10px;
 `;
@@ -84,19 +84,83 @@ const TextField = styled.div`
 
     ::before {
         position: absolute;
-        content: 'ROOM ID';
+        content: '${({ name }) => name}';
         width: auto;
         height: auto;
         background-color: white;
         top: -15px;
         left: 8px;
-        padding: 0px 4px;
-        font-size: 1rem;
+        padding: 0px 8px;
+        font-size: 1.1rem;
+    }
+
+    &:hover {
+        cursor: pointer;
     }
 `;
 
 const Sides = styled.div`
-    display: flex;
+    display: grid;
+    gap: 10px;
+    grid-template-columns: 50px 1fr 50px;
 `;
 
-export { Game, Container, Footer, View, Button, Box, TextField, Sides };
+const ToolBar = styled.div`
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+`;
+
+const MiniBtn = styled.div`
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    box-sizing: border-box;
+    background: ${({ clickable }) => (clickable ? '#616161' : 'white')};
+    border: 2px solid #616161;
+    color: ${({ clickable }) => (clickable ? '#f2f2f2' : '#616161')};
+    cursor: ${({ clickable }) => (clickable ? 'pointer' : 'auto')};
+
+    div {
+        display: none;
+        white-space: nowrap;
+        position: absolute;
+        justify-content: center;
+        align-items: center;
+        width: auto;
+        max-height: 50px;
+        padding: 8px;
+        box-sizing: border-box;
+        left: calc(100%);
+        background: #616161;
+        color: #f2f2f2;
+        z-index: 3;
+        border-radius: 8px;
+        box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+        transition: all 0.3s;
+    }
+
+    :hover {
+        div {
+            display: flex;
+            left: calc(100% + 13px);
+        }
+    }
+`;
+
+const FixLayer = styled.div`
+    position: fixed;
+    width: 100vw;
+    pointer-events: none;
+    user-select: none;
+    z-index: 200;
+    height: 100vh;
+`;
+
+export { Game, Container, Footer, View, Button, Box, TextField, Sides, ToolBar, MiniBtn, FixLayer };

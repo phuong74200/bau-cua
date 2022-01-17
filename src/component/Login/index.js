@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -20,6 +20,7 @@ import authApi from '../../services/api/authApi';
 import { PopupGoogleLogin } from '../../services/authentication/';
 import { updateIns } from '../../utils/apiCaller';
 import Board from '../Game/Board';
+import { Loading } from '../Loading';
 import ButtonBase from './components/Button/ButtonBase';
 import Dice from './components/Dice';
 import * as Styled from './index.style.js';
@@ -30,18 +31,21 @@ const Login = () => {
     let navigate = useNavigate();
     let dispatch = useDispatch();
 
+    const [isLoading, setIsLoading] = useState(false);
+
     const onOAuthSuccess = async (OAuthToken, type = 'firebase') => {
+        setIsLoading(true);
         try {
             localStorage.setItem('token', OAuthToken);
             updateIns();
             let result = await authApi.getUser(OAuthToken, type);
             dispatch(login(result.data));
             Success('Đăng nhập thành công.');
+            setIsLoading(false);
             navigate('/room');
         } catch (error) {
             Error('Đăng nhập thất bại.');
         } finally {
-            //set Loading
         }
     };
 
@@ -60,40 +64,43 @@ const Login = () => {
     };
 
     return (
-        <Styled.Login>
-            <Styled.BoardBackground>
-                <Board canBet={false} />
-            </Styled.BoardBackground>
+        <div>
+            <Loading isLoading={isLoading} />
+            <Styled.Login>
+                <Styled.BoardBackground>
+                    <Board canBet={false} />
+                </Styled.BoardBackground>
 
-            <Styled.BannerLeft>
-                <img src={bannerLeft} alt="banner left"></img>
-            </Styled.BannerLeft>
-            <Styled.BannerRight>
-                <img src={bannerRight} alt="banner right"></img>
-            </Styled.BannerRight>
-            <Styled.BannerBottom>
-                <img src={background_banner_bottom} alt="banner bottom"></img>
-                <div style={{ backgroundImage: `url(${bannerBottom})` }}></div>
-            </Styled.BannerBottom>
+                <Styled.BannerLeft>
+                    <img src={bannerLeft} alt="banner left"></img>
+                </Styled.BannerLeft>
+                <Styled.BannerRight>
+                    <img src={bannerRight} alt="banner right"></img>
+                </Styled.BannerRight>
+                <Styled.BannerBottom>
+                    <img src={background_banner_bottom} alt="banner bottom"></img>
+                    <div style={{ backgroundImage: `url(${bannerBottom})` }}></div>
+                </Styled.BannerBottom>
 
-            <Styled.LoginMain>
-                <ButtonBase
-                    width={isMobile ? '160px' : '300px'}
-                    padding={isMobile ? '8px' : '16px'}
-                    background_color="#e63a0a"
-                    text_color="white"
-                    animation={true}
-                    onClick={handleBtnLogin()}
-                >
-                    {isMobile ? 'Đăng nhập' : 'Đăng nhập với mail @fpt.edu.vn'}
-                </ButtonBase>
-                <Styled.DiceWrapper>
-                    <Dice front={ga} back={ca} top={tom} left={bau} right={cop} bottom={cua} />
-                    <Dice front={ga} back={ca} top={tom} left={cua} right={cop} bottom={bau} />
-                    <Dice front={cop} back={ca} top={tom} left={ga} right={cua} bottom={bau} />
-                </Styled.DiceWrapper>
-            </Styled.LoginMain>
-        </Styled.Login>
+                <Styled.LoginMain>
+                    <ButtonBase
+                        width={isMobile ? '160px' : '300px'}
+                        padding={isMobile ? '8px' : '16px'}
+                        background_color="#e63a0a"
+                        text_color="white"
+                        animation={true}
+                        onClick={handleBtnLogin()}
+                    >
+                        {isMobile ? 'Đăng nhập' : 'Đăng nhập với mail @fpt.edu.vn'}
+                    </ButtonBase>
+                    <Styled.DiceWrapper>
+                        <Dice front={ga} back={ca} top={tom} left={bau} right={cop} bottom={cua} />
+                        <Dice front={ga} back={ca} top={tom} left={cua} right={cop} bottom={bau} />
+                        <Dice front={cop} back={ca} top={tom} left={ga} right={cua} bottom={bau} />
+                    </Styled.DiceWrapper>
+                </Styled.LoginMain>
+            </Styled.Login>
+        </div>
     );
 };
 
