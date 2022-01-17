@@ -219,11 +219,11 @@ const Game = () => {
                             JSON.parse(localStorage.getItem('userBet'))
                         )
                     );
+                    openDialog();
                     setUserBet([0, 0, 0, 0, 0, 0]);
                     tagsData.forEach((state) => {
                         state[1]({});
                     });
-                    openDialog();
                 })
                 // eslint-disable-next-line prettier/prettier
                 .catch((error) => {});
@@ -243,8 +243,8 @@ const Game = () => {
     };
 
     const logout = () => {
-        localStorage.removeItem('token');
-        navigateTo('/login');
+        localStorage.removeItem('roomID');
+        navigateTo('/room');
     };
 
     return (
@@ -274,7 +274,7 @@ const Game = () => {
                 <Styled.ToolBar>
                     <Styled.MiniBtn>
                         <span>{gold}</span>
-                        <div>Số lượng Đồng hiện đang có</div>
+                        <div>Số lượng đồng hiện đang có</div>
                     </Styled.MiniBtn>
                     {role === 'admin' ? (
                         <Styled.MiniBtn
@@ -325,13 +325,13 @@ const Game = () => {
                     ) : null}
                     <Styled.MiniBtn
                         clickable
-                        onClick={() => dispatch(signOut())}
+                        onClick={() => logout()}
                         style={{
                             marginTop: 'auto',
                         }}
                     >
                         <FontAwesomeIcon icon={faSignOutAlt} />
-                        <div>Đăng xuất</div>
+                        <div>Rời phòng</div>
                     </Styled.MiniBtn>
                 </Styled.ToolBar>
                 <Styled.Container>
