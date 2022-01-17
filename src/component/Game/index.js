@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 
 import { getResultBet, labelList } from '../../helpers/getResultBet';
 import { Success, Error } from '../../helpers/notify';
@@ -85,9 +86,6 @@ const Game = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const playing = {};
-    const [playerCount, setPlayerCount] = useState(0);
-
     const scale = (number, inMin, inMax, outMin, outMax) => {
         return ((number - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
     };
@@ -131,11 +129,14 @@ const Game = () => {
             .then((res) => {
                 Success('Đặt cược thành công!');
                 localStorage.setItem('userBet', JSON.stringify(userBet));
+                setUserBet(new Array(6).fill(0));
             })
             .catch((e) => {
-                Error('Không thể đặt cược');
+                toast.error('Không thể đặt cược');
+                const sum = userBet.reduce((pre, cur) => pre + cur, 0);
+                setUserBet(new Array(6).fill(0));
+                setGold(() => gold + sum);
                 const data = e.response.data;
-                Error(data.message);
                 if (
                     e.response.status === 400 &&
                     e.response.data.message === 'User must join room before bet'
@@ -178,15 +179,6 @@ const Game = () => {
     ]);
 
     const kick = (face = []) => {
-        // console.log('Result: ', face);
-        // console.log('User Bet', JSON.parse(localStorage.getItem('userBet')));
-        // console.log(
-        //     'Result: ',
-        //     getResultBet(
-        //         JSON.parse(localStorage.getItem('rollResult')),
-        //         JSON.parse(localStorage.getItem('userBet'))
-        //     )
-        // );
         const map = [
             [90, 0],
             [0, 0],
@@ -227,7 +219,7 @@ const Game = () => {
                     openDialog();
                 })
                 // eslint-disable-next-line prettier/prettier
-                .catch((error) => {});
+                .catch((error) => { });
             setRoll(false);
         }, 10000);
         setTimeout(() => {
@@ -252,15 +244,10 @@ const Game = () => {
         <Styled.Game>
             <RollStage isShow={isRoll} diceFace={diceFace} />
             <Dialog
-                title={
-                    JSON.parse(localStorage.getItem('rollResult'))
-                        ? `[Kết quả: ${
-                              labelList[JSON.parse(localStorage.getItem('rollResult'))[0]]
-                          }, ${labelList[JSON.parse(localStorage.getItem('rollResult'))[1]]}, ${
-                              labelList[JSON.parse(localStorage.getItem('rollResult'))[2]]
-                          }]`
-                        : ''
-                }
+                title={() => {
+                    const result = JSON.parse(localStorage.getItem('rollResult'));
+                    result ? `[Kết quả: ${result[0]}, ${result[1]}, ${result[2]}]` : '';
+                }}
                 isShowing={isShowing}
                 hide={handleCloseResultDialog}
             >
@@ -303,7 +290,6 @@ const Game = () => {
                         <Styled.MiniBtn
                             clickable
                             onClick={() => {
-                                setUserBet(new Array(6).fill(0));
                                 putBetWithServer(userBet);
                             }}
                         >
