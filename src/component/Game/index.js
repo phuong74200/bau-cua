@@ -54,6 +54,7 @@ const Game = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [userBet, setUserBet] = useState([0, 0, 0, 0, 0, 0]);
     const [fixItems, setFixItems] = useState({});
+    const [confirm, setConfirm] = useState(false);
 
     useEffect(() => {
         _axios
