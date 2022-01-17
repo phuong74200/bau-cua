@@ -8,6 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { Success, Error } from '../../helpers/notify';
 import { signOut } from '../Login/loginSlice';
 import * as Admin from './AdminBar';
+import BetBar from './BetBar';
 import Board from './Board';
 import RollStage from './RollStage';
 import * as CONFIG from './config';
@@ -44,6 +45,7 @@ const Game = () => {
     const [name, setName] = useState('username');
     const [role, setRole] = useState('user');
     const [searchParams, setSearchParams] = useSearchParams();
+    const [userBet, setUserBet] = useState([0, 0, 0, 0, 0, 0]);
 
     useEffect(() => {
         _axios
@@ -74,52 +76,28 @@ const Game = () => {
         const user = data.user;
         const betValue = data.bet;
 
-        playing[user] = null;
-        setPlayerCount(Object.keys(playing).length);
-
-        setGold((pre) => {
-            if (pre >= betValue) {
-                set((preState) => {
-                    const x = ~~scale(
-                        seedrandom(user + 'x' + position.toString())() * 100,
-                        0,
-                        100,
-                        10,
-                        90
-                    );
-                    const y = ~~scale(
-                        seedrandom(user + 'y' + position.toString())() * 100,
-                        0,
-                        100,
-                        10,
-                        90
-                    );
-                    return {
-                        ...preState,
-                        [user]: {
-                            bet: (preState[user] ? preState[user].bet : 0) + betValue,
-                            self: true,
-                            x: preState[user] ? preState[user].x : x,
-                            y: preState[user] ? preState[user].y : y,
-                        },
-                    };
-                });
-                return pre - betValue;
-            } else {
-                Error('Không đủ coin');
-            }
-            return pre;
+        set((preState) => {
+            const x = ~~scale(seedrandom(user + 'x' + position.toString())() * 100, 0, 100, 10, 90);
+            const y = ~~scale(seedrandom(user + 'y' + position.toString())() * 100, 0, 100, 10, 90);
+            return {
+                ...preState,
+                [user]: {
+                    bet: (preState[user] ? preState[user].bet : 0) + betValue,
+                    self: true,
+                    x: preState[user] ? preState[user].x : x,
+                    y: preState[user] ? preState[user].y : y,
+                },
+            };
         });
     };
 
-    const putBetWithServer = (position, betValue = 5) => {
-        const bet = new Array(6).fill(0);
-        bet[position] = betValue;
+    const putBetWithServer = (userBet) => {
+        console.log(userBet);
         _axios
             .post(
                 `/room/${searchParams.get('roomID')}/bet`,
                 {
-                    bet: bet,
+                    bet: userBet,
                 },
                 {
                     headers: {
@@ -142,6 +120,7 @@ const Game = () => {
                     navigateTo('/room');
                 }
             });
+        toast.success('Đặt cược thành công');
     };
 
     const [isRoll, setRoll] = useState(false);
@@ -209,7 +188,7 @@ const Game = () => {
                     setRole(data.role);
                 })
                 .catch((error) => {
-                    toast.error(error.response.data.message);
+                    Success(error.response.data.message);
                 });
             // eslint-disable-next-line react-hooks/exhaustive-deps
             setRoll(false);
@@ -250,6 +229,24 @@ const Game = () => {
                             ) : (
                                 <Styled.Button>{name}</Styled.Button>
                             )}
+                            {role === 'user' ? (
+                                <Styled.Box>
+                                    <Styled.Button
+                                        bgColor="#07bc0c"
+                                        isClick
+                                        onClick={() => {
+                                            putBetWithServer(userBet);
+                                        }}
+                                    >
+                                        Xác nhận đặt cược
+                                    </Styled.Button>
+                                    <Styled.Button bgColor="#FF7878" isClick>
+                                        Đặt lại
+                                    </Styled.Button>
+                                </Styled.Box>
+                            ) : (
+                                <div></div>
+                            )}
                         </Styled.Box>
                         <Styled.Box>
                             <Styled.Button
@@ -272,12 +269,17 @@ const Game = () => {
                         </Styled.Box>
                     </Styled.Footer>
                     <Styled.View>
-                        <Board tagsData={tagsData} putBetWithServer={putBetWithServer} />
+                        <Board
+                            tagsData={tagsData}
+                            putBetWithServer={putBetWithServer}
+                            setUserBet={setUserBet}
+                            setGold={setGold}
+                            gold={gold}
+                            userBet={userBet}
+                        />
                     </Styled.View>
-                    <Styled.Footer justify="flex-end" bottom={8}>
-                        <Styled.Button status="close">
-                            <span>Opening</span>
-                        </Styled.Button>
+                    <Styled.Footer justify="center" bottom={8}>
+                        <BetBar list={userBet} />
                     </Styled.Footer>
                 </Styled.Container>
                 <div></div>

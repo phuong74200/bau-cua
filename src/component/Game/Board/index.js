@@ -1,5 +1,8 @@
 import React from 'react';
 
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+
 import calabash from '../../../assets/_pack/calabash.png';
 import chicken from '../../../assets/_pack/chicken.png';
 import crab from '../../../assets/_pack/crab.png';
@@ -20,7 +23,7 @@ const Polygon = ({ fill }) => {
     );
 };
 
-const Board = ({ tagsData = [], putBetWithServer = () => {}, canBet = true }) => {
+const Board = ({ tagsData = [], setUserBet, setGold, gold, userBet, canBet = true }) => {
     const slots = [tiger, calabash, chicken, shrimp, fish, crab];
     const color = [
         ['#A1CAE2', '#D7E9F7', '#D6E5FA'],
@@ -31,6 +34,22 @@ const Board = ({ tagsData = [], putBetWithServer = () => {}, canBet = true }) =>
         ['#CAF7E3', '#EDFFEC', '#D5ECC2'],
     ];
 
+    const addBet = (index) => {
+        setGold((pre) => {
+            if (pre >= 5) {
+                setUserBet((pre) => {
+                    const clone = [...userBet];
+                    clone[index] += 5;
+                    return clone;
+                });
+                return gold - 5;
+            } else {
+                toast.error('Không đủ coin');
+                return pre;
+            }
+        });
+    };
+
     return (
         <Styled.Grid>
             {slots.map((slot, index) => {
@@ -38,7 +57,7 @@ const Board = ({ tagsData = [], putBetWithServer = () => {}, canBet = true }) =>
                     <Styled.Slot
                         key={index}
                         onClick={() => {
-                            putBetWithServer(index, 5);
+                            addBet(index);
                         }}
                     >
                         <Styled.Plate hoverColor={color[index][2]}>
