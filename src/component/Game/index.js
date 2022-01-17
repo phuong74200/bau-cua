@@ -5,6 +5,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 
 import * as Admin from './AdminBar';
+import BettedBar from './BettedBar';
 import Board from './Board';
 import RollStage from './RollStage';
 import * as CONFIG from './config';
@@ -39,6 +40,7 @@ const Game = () => {
     const [name, setName] = useState('username');
     const [role, setRole] = useState('user');
     const [searchParams, setSearchParams] = useSearchParams();
+    const [userBet, setUsetBet] = useState([]);
 
     useEffect(() => {
         _axios
@@ -264,6 +266,7 @@ const Game = () => {
                         <Styled.Button status="close">
                             <span>Opening</span>
                         </Styled.Button>
+                        <BettedBar list={userBet} />
                     </Styled.Footer>
                 </Styled.Container>
                 <div></div>
