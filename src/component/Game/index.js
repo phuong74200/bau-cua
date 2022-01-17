@@ -12,7 +12,8 @@ import * as CONFIG from './config';
 import * as Styled from './index.style';
 import socket from './socket';
 
-import 'react-toastify/dist/ReactToastify.css';
+import { faDice, faSignOutAlt, faCheckSquare } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const seedrandom = require('seedrandom');
 
@@ -87,6 +88,7 @@ const Game = () => {
     };
 
     const putBetWithServer = (userBet) => {
+        console.log(userBet);
         _axios
             .post(
                 `/room/${searchParams.get('roomID')}/bet`,
@@ -104,10 +106,8 @@ const Game = () => {
                 toast.success('Đặt cược thành công!');
             })
             .catch((e) => {
-                const data = e.response.data;
-                toast.error(data.message);
+                toast.error('Không thể đặt cược');
             });
-        toast.success('Đặt cược thành công');
     };
 
     const [isRoll, setRoll] = useState(false);
@@ -164,8 +164,9 @@ const Game = () => {
                 .then((res) => {
                     const data = res.data.data;
                     setGold((pre) => {
-                        if (data.coin > pre) {
-                            toast.success(`You won ${data.coin - pre} coins`);
+                        const sum = userBet.reduce((pre, cur) => pre + cur, 0);
+                        if (data.coin > sum) {
+                            toast.success(`You won ${data.coin - sum} coins`);
                         }
                         return data.coin;
                     });
@@ -198,47 +199,57 @@ const Game = () => {
         navigateTo('/login');
     };
 
+    const rollToServer = (roomID) => {
+        Admin.rollGame(roomID, () => {
+            Admin.resetGame(roomID);
+        });
+    };
+
     return (
         <Styled.Game>
             <RollStage isShow={isRoll} diceFace={diceFace} />
             <Styled.Sides>
+                <Styled.ToolBar>
+                    <Styled.MiniBtn>
+                        <span>{gold}</span>
+                        <div>Số lượng coin hiện đang có</div>
+                    </Styled.MiniBtn>
+                    {role === 'admin' ? (
+                        <Styled.MiniBtn
+                            onClick={() => {
+                                rollToServer(searchParams.get('roomID'));
+                            }}
+                            clickable
+                        >
+                            <FontAwesomeIcon icon={faDice} />
+                            <div>Lắc bầu cua (admin only)</div>
+                        </Styled.MiniBtn>
+                    ) : null}
+                    <Styled.MiniBtn
+                        clickable
+                        onClick={() => {
+                            putBetWithServer(userBet);
+                        }}
+                    >
+                        <FontAwesomeIcon icon={faCheckSquare} />
+                        <div>Xác nhận đặt cược (không thể đặt lại)</div>
+                    </Styled.MiniBtn>
+                    <Styled.MiniBtn
+                        clickable
+                        onClick={() => {
+                            logout();
+                        }}
+                        style={{
+                            marginTop: 'auto',
+                        }}
+                    >
+                        <FontAwesomeIcon icon={faSignOutAlt} />
+                        <div>Đăng xuất</div>
+                    </Styled.MiniBtn>
+                </Styled.ToolBar>
                 <Styled.Container>
                     <Styled.Footer justify="space-between" top={8}>
                         <Styled.Box>
-                            <Styled.Button>
-                                <span>coin: {gold}</span>
-                            </Styled.Button>
-                            {role === 'admin' ? (
-                                <Styled.Box>
-                                    <Admin.Roll />
-                                    <Admin.EndGame />
-                                </Styled.Box>
-                            ) : (
-                                <Styled.Button>{name}</Styled.Button>
-                            )}
-                            {role === 'user' ? (
-                                <Styled.Box>
-                                    <Styled.Button
-                                        bgColor="#07bc0c"
-                                        isClick
-                                        onClick={() => {
-                                            putBetWithServer(userBet);
-                                        }}
-                                    >
-                                        Xác nhận đặt cược
-                                    </Styled.Button>
-                                    <Styled.Button bgColor="#FF7878" isClick>
-                                        Đặt lại
-                                    </Styled.Button>
-                                </Styled.Box>
-                            ) : (
-                                <div></div>
-                            )}
-                        </Styled.Box>
-                        <Styled.Box>
-                            <Styled.Button bgColor="#FF7878" isClick onClick={logout}>
-                                <span>Đăng xuất</span>
-                            </Styled.Button>
                             <Styled.TextField
                                 readonly
                                 editable
@@ -261,11 +272,8 @@ const Game = () => {
                             userBet={userBet}
                         />
                     </Styled.View>
-                    <Styled.Footer justify="center" bottom={8}>
-                        <BetBar list={userBet} />
-                    </Styled.Footer>
                 </Styled.Container>
-                <div></div>
+                <BetBar list={userBet} />
             </Styled.Sides>
         </Styled.Game>
     );

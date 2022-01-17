@@ -4,58 +4,33 @@ import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
 
 import * as CONFIG from '../config';
-import * as Styled from './index.style';
 
-const Roll = ({ setRank }) => {
-    const [searchParams, setSearchParams] = useSearchParams();
+const _axios = axios.create({
+    baseURL: CONFIG.BE_URL,
+    timeout: 1000,
+    headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token'),
+    },
+});
 
-    const _axios = axios.create({
-        baseURL: CONFIG.BE_URL,
-        timeout: 1000,
-        headers: {
-            Authorization: 'Bearer ' + localStorage.getItem('token'),
-        },
-    });
-
-    const rollToServer = () => {
-        _axios
-            .post(`/room/${searchParams.get('roomID')}/roll`, {
-                id: searchParams.get('roomID'),
-            })
-            .then((res) => {
-                _axios
-                    .post(`/room/${searchParams.get('roomID')}/reset`, {
-                        id: searchParams.get('roomID'),
-                    })
-                    .then((ranking) => {
-                        setRank(ranking.data.data);
-                    });
-            });
-    };
-    return <Styled.Button onClick={rollToServer}>Lắc bầu cua</Styled.Button>;
-};
-
-const EndGame = () => {
-    const [searchParams, setSearchParams] = useSearchParams();
-
-    const _axios = axios.create({
-        baseURL: CONFIG.BE_URL,
-        timeout: 1000,
-        headers: {
-            Authorization: 'Bearer ' + localStorage.getItem('token'),
-        },
-    });
-
-    const endGame = () => {
-        _axios.post(`/room/${searchParams.get('roomID')}/reset-and-get-rank`, {
-            id: searchParams.get('roomID'),
+const rollGame = (roomID, cb) => {
+    _axios
+        .post(`/room/${roomID}/roll`, {
+            id: roomID,
+        })
+        .then((res) => {
+            cb(res);
         });
-    };
-    return (
-        <Styled.Button onClick={endGame} bgColor="#FF7878">
-            Kết thúc
-        </Styled.Button>
-    );
 };
 
-export { Roll, EndGame };
+const resetGame = (roomID, cb) => {
+    _axios
+        .post(`/room/${roomID}/reset`, {
+            id: roomID,
+        })
+        .then((res) => {
+            cb(res);
+        });
+};
+
+export { rollGame, resetGame };

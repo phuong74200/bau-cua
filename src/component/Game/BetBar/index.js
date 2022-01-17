@@ -15,9 +15,8 @@ const BetBar = ({ list }) => {
         <Styled.Container>
             {list.map((item, index) => {
                 return (
-                    <Styled.Side key={index}>
+                    <Styled.Side key={index} qualities={item}>
                         <img src={slots[index]} />
-                        <Styled.Text>x{item}</Styled.Text>
                     </Styled.Side>
                 );
             })}
