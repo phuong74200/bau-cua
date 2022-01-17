@@ -266,68 +266,6 @@ const Game = () => {
                 })}
             </Styled.FixLayer>
             <Styled.Sides>
-                <Styled.ToolBar>
-                    <Styled.MiniBtn>
-                        <span>{gold}</span>
-                        <div>Số lượng đồng hiện đang có</div>
-                    </Styled.MiniBtn>
-                    {role === 'admin' ? (
-                        <Styled.MiniBtn
-                            onClick={() => {
-                                Admin.rollGame(searchParams.get('roomID'));
-                            }}
-                            clickable
-                        >
-                            <FontAwesomeIcon icon={faDice} />
-                            <div>Lắc bầu cua (admin only)</div>
-                        </Styled.MiniBtn>
-                    ) : null}
-                    {role === 'admin' ? (
-                        <Styled.MiniBtn
-                            onClick={() => {
-                                Admin.resetGame(searchParams.get('roomID'));
-                            }}
-                            clickable
-                        >
-                            <FontAwesomeIcon icon={faStopCircle} />
-                            <div>Reset game (lấy rank và xóa room)</div>
-                        </Styled.MiniBtn>
-                    ) : null}
-                    {role === 'user' ? (
-                        <Styled.MiniBtn
-                            clickable
-                            onClick={() => {
-                                putBetWithServer(userBet);
-                            }}
-                        >
-                            <FontAwesomeIcon icon={faCheckSquare} />
-                            <div>Xác nhận đặt cược (không thể đặt lại)</div>
-                        </Styled.MiniBtn>
-                    ) : null}
-                    {role === 'user' ? (
-                        <Styled.MiniBtn
-                            clickable
-                            onClick={() => {
-                                const sum = userBet.reduce((pre, cur) => pre + cur, 0);
-                                setUserBet(new Array(6).fill(0));
-                                setGold(() => gold + sum);
-                            }}
-                        >
-                            <FontAwesomeIcon icon={faRedo} />
-                            <div>Đặt lại</div>
-                        </Styled.MiniBtn>
-                    ) : null}
-                    <Styled.MiniBtn
-                        clickable
-                        onClick={() => logout()}
-                        style={{
-                            marginTop: 'auto',
-                        }}
-                    >
-                        <FontAwesomeIcon icon={faSignOutAlt} />
-                        <div>Rời phòng</div>
-                    </Styled.MiniBtn>
-                </Styled.ToolBar>
                 <Styled.Container>
                     <Styled.Footer justify="space-between" top={8}>
                         <Styled.Box>
