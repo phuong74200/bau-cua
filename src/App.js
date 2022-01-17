@@ -1,13 +1,15 @@
 import React from 'react';
 
+import { BrowserRouter } from 'react-router-dom';
+
 import { Login, Room } from './component';
 import { RouterComponents } from './routers';
 
 function App() {
     return (
-        <div>
+        <BrowserRouter>
             <RouterComponents />
-        </div>
+        </BrowserRouter>
     );
 }
 
