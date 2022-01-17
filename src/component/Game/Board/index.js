@@ -44,7 +44,7 @@ const Board = ({ tagsData = [], setUserBet, setGold, gold, userBet, canBet = tru
                 });
                 return gold - 5;
             } else {
-                toast.error('Không đủ coin');
+                toast.error('Không đủ đồng.');
                 return pre;
             }
         });

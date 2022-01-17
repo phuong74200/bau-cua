@@ -93,6 +93,10 @@ const TextField = styled.div`
         padding: 0px 4px;
         font-size: 1rem;
     }
+
+    &:hover {
+        cursor: pointer;
+    }
 `;
 
 const Sides = styled.div`

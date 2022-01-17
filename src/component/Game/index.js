@@ -92,7 +92,6 @@ const Game = () => {
     };
 
     const putBetWithServer = (userBet) => {
-        console.log(userBet);
         _axios
             .post(
                 `/room/${searchParams.get('roomID')}/bet`,
@@ -117,6 +116,7 @@ const Game = () => {
                     e.response.data.message === 'User must join room before bet'
                 ) {
                     localStorage.removeItem('roomID');
+                    Error('Bạn hãy tham gia phòng để bắt đầu trò chơi.');
                     navigateTo('/room');
                 }
             });
@@ -179,7 +179,7 @@ const Game = () => {
                         if (data.coin > pre) {
                             Success(`Bạn đã thắng ${data.coin - pre} đồng`);
                         } else {
-                            Error(`Bạn đã thua 5 đồng`);
+                            Error(`Bạn đã thua ${data.coin - pre} đồng`);
                         }
                         return data.coin;
                     });
@@ -218,7 +218,7 @@ const Game = () => {
                     <Styled.Footer justify="space-between" top={8}>
                         <Styled.Box>
                             <Styled.Button>
-                                <span>coin: {gold}</span>
+                                <span>Tiền của bạn: {gold}</span>
                             </Styled.Button>
                             {role === 'admin' ? (
                                 <Styled.Box>
@@ -260,7 +260,7 @@ const Game = () => {
                                 editable
                                 onClick={() => {
                                     copyRoomID();
-                                    toast.success('Room id copied to clipboard!');
+                                    Success('RoomID đã được sao chép!');
                                 }}
                             >
                                 {searchParams.get('roomID')}
