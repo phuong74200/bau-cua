@@ -24,7 +24,7 @@ const Roll = ({ setRank }) => {
             })
             .then((res) => {
                 _axios
-                    .post(`/room/${searchParams.get('roomID')}/reset-and-get-rank`, {
+                    .post(`/room/${searchParams.get('roomID')}/reset`, {
                         id: searchParams.get('roomID'),
                     })
                     .then((ranking) => {
