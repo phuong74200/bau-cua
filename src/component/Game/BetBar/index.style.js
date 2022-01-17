@@ -4,7 +4,14 @@ const Container = styled.div`
     display: flex;
     gap: 20px;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: center;
+
+    @media (max-width: 992px) {
+        position: fixed;
+        right: 24px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
 `;
 
 const Side = styled.div`

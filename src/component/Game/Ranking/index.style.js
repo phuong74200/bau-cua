@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 const Top = styled.div`
     border-radius: 50%;
@@ -11,15 +11,44 @@ const Top = styled.div`
     font-size: 4rem;
 `;
 
+const kShow = keyframes`
+    from {
+        margin-top: -16px;
+        opacity: 0;
+    }
+    to {
+        margin-top: 0px;
+        opacity: 1;  
+    }
+`;
+
+const kHide = keyframes`
+    from {
+        margin-top: 0px;
+        opacity: 1;
+    }
+    to {
+        margin-top: -16px;
+        opacity: 0;  
+    }
+`;
+
 const Container = styled.div`
+    background: #f2f2f2;
     border-radius: 20px;
-    background: #fbf3e6;
-    width: 100%;
-    height: fit-content;
+    width: 500px;
+    z-index: 20;
+    height: auto;
     display: grid;
-    grid-template-rows: 300px 1fr;
     padding: 16px;
     box-sizing: border-box;
+    grid-template-rows: 30px 1fr;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    animation: ${({ isShow }) => (isShow ? kShow : kHide)} 1s forwards;
 `;
 
 const TopContainer = styled.div`
@@ -80,17 +109,15 @@ const TopCircle = styled.div`
 `;
 
 const LowTopContainer = styled.div`
-    display: flex;
+    display: grid;
     flex-direction: column;
 `;
 
 const LowTop = styled.div`
     width: 100%;
-    height: auto;
-    padding: 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    height: 60px;
+    display: grid;
+    grid-template-columns: 50px 1fr 250px;
 `;
 
 const LowTopCircle = styled.div`
@@ -110,4 +137,28 @@ const LowRight = styled.div`
     align-items: center;
 `;
 
-export { Top, Container, TopContainer, TopCircle, LowTopContainer, LowTop, LowTopCircle, LowRight };
+const Text = styled.div`
+    display: flex;
+    justify-content: ${({ justify }) => (justify ? justify : 'center')};
+    font-weight: ${({ weight }) => (weight ? weight : 'center')};
+    align-items: center;
+`;
+
+const Close = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+`;
+
+export {
+    Top,
+    Container,
+    TopContainer,
+    TopCircle,
+    LowTopContainer,
+    LowTop,
+    LowTopCircle,
+    LowRight,
+    Text,
+    Close,
+};

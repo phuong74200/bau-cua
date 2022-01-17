@@ -12,7 +12,7 @@ const Game = styled.div`
 
 const Container = styled.div`
     display: grid;
-    grid-template-rows: 50px 1fr;
+    grid-template-rows: 50px 1fr 50px;
     grid-template-columns: 1fr;
     gap: 10px;
 `;
@@ -26,23 +26,6 @@ const Footer = styled.div`
     align-items: center;
     gap: 10px;
     z-index: 1;
-
-    @media (max-width: 1280px) {
-        position: sticky;
-        top: ${({ top }) => top}px;
-        left: ${({ left }) => left}px;
-        bottom: ${({ bottom }) => bottom}px;
-        right: ${({ right }) => right}px;
-        justify-content: space-between;
-    }
-
-    @media (max-width: 768px) {
-        position: sticky;
-        top: ${({ top }) => top}px;
-        left: ${({ left }) => left}px;
-        bottom: ${({ bottom }) => bottom}px;
-        right: ${({ right }) => right}px;
-    }
 `;
 
 const View = styled.div`
@@ -97,12 +80,20 @@ const TextField = styled.div`
     &:hover {
         cursor: pointer;
     }
+
+    @media (max-width: 992px) {
+        display: none;
+    }
 `;
 
 const Sides = styled.div`
     display: grid;
-    gap: 10px;
-    grid-template-columns: 50px 1fr 50px;
+    gap: 20px;
+    grid-template-columns: 1fr 50px;
+
+    @media (max-width: 992px) {
+        grid-template-columns: 1fr;
+    }
 `;
 
 const ToolBar = styled.div`
@@ -113,7 +104,7 @@ const ToolBar = styled.div`
     gap: 10px;
 `;
 
-const MiniBtn = styled.div`
+const MiniBtn1 = styled.div`
     width: 50px;
     height: 50px;
     border-radius: 8px;
@@ -154,6 +145,29 @@ const MiniBtn = styled.div`
     }
 `;
 
+const MiniBtn = styled.div`
+    display: grid;
+    grid-template-columns: auto 1fr;
+    border-radius: 8px;
+    overflow: hidden;
+    width: auto;
+    height: 100%;
+    gap: 1px;
+    color: white;
+    cursor: pointer;
+`;
+
+const CenterIcon = styled.div`
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0px 12px;
+    box-sizing: border-box;
+    background: ${({ bgColor }) => (bgColor ? bgColor : '#3498db')};
+`;
+
 const FixLayer = styled.div`
     position: fixed;
     width: 100vw;
@@ -163,4 +177,17 @@ const FixLayer = styled.div`
     height: 100vh;
 `;
 
-export { Game, Container, Footer, View, Button, Box, TextField, Sides, ToolBar, MiniBtn, FixLayer };
+export {
+    Game,
+    Container,
+    Footer,
+    View,
+    Button,
+    Box,
+    TextField,
+    Sides,
+    ToolBar,
+    MiniBtn,
+    FixLayer,
+    CenterIcon,
+};

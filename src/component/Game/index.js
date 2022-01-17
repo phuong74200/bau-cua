@@ -5,11 +5,17 @@ import { useDispatch } from 'react-redux';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 
+import { getResultBet, labelList } from '../../helpers/getResultBet';
 import { Success, Error } from '../../helpers/notify';
+import useDialog from '../../hooks/useDialog';
+import usePrevious from '../../hooks/usePrevious';
+import Dialog from '../Login/components/Dialog';
 import { signOut } from '../Login/loginSlice';
 import * as Admin from './AdminBar';
 import BetBar from './BetBar';
 import Board from './Board';
+import Ranking from './Ranking';
+import ResultDialog from './ResultDialog';
 import RollStage from './RollStage';
 import * as CONFIG from './config';
 import * as Styled from './index.style';
@@ -21,6 +27,8 @@ import {
     faCheckSquare,
     faRedo,
     faStopCircle,
+    faCoins,
+    faTrophy,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -29,6 +37,17 @@ const seedrandom = require('seedrandom');
 const Game = () => {
     const navigateTo = useNavigate();
     const dispatch = useDispatch();
+
+    const [resultData, setResultData] = useState([]);
+    const [userBet, setUserBet] = useState([0, 0, 0, 0, 0, 0]);
+
+    const [isShowing, toggle, openDialog, closeDialog] = useDialog(false);
+    const handleCloseResultDialog = () => {
+        localStorage.removeItem('userBet');
+        localStorage.removeItem('rollResult');
+        closeDialog();
+    };
+
     const dices = [useState(), useState(), useState()];
     const tagsData = [
         useState({}),
@@ -52,9 +71,8 @@ const Game = () => {
     const [name, setName] = useState('username');
     const [role, setRole] = useState('user');
     const [searchParams, setSearchParams] = useSearchParams();
-    const [userBet, setUserBet] = useState([0, 0, 0, 0, 0, 0]);
     const [fixItems, setFixItems] = useState({});
-    const [confirm, setConfirm] = useState(false);
+    const [isRank, setRank] = useState(false);
 
     useEffect(() => {
         _axios
@@ -113,12 +131,15 @@ const Game = () => {
             )
             .then((res) => {
                 Success('Đặt cược thành công!');
-                // setUserBet(new Array(6).fill(0));
+                localStorage.setItem('userBet', JSON.stringify(userBet));
+                setUserBet(new Array(6).fill(0));
             })
             .catch((e) => {
                 toast.error('Không thể đặt cược');
+                const sum = userBet.reduce((pre, cur) => pre + cur, 0);
+                setUserBet(new Array(6).fill(0));
+                setGold(() => gold + sum);
                 const data = e.response.data;
-                Error(data.message);
                 if (
                     e.response.status === 400 &&
                     e.response.data.message === 'User must join room before bet'
@@ -145,6 +166,10 @@ const Game = () => {
             }
             if (TYPE === 'roll') {
                 const data = message.data;
+                localStorage.setItem('rollResult', JSON.stringify(data.rollResult));
+                tagsData.forEach((state) => {
+                    state[1]({});
+                });
                 kick(data.rollResult);
             }
         };
@@ -184,16 +209,20 @@ const Game = () => {
                 .get('/user')
                 .then((res) => {
                     const data = res.data.data;
+                    setGold(data.coin);
                     setName(data.name);
                     setRole(data.role);
-                    setGold((pre) => {
-                        const value = data.coin - pre;
-                        toast(`Bạn nhận được ${value} Đồng`);
-                        return data.coin;
-                    });
+                    setResultData(
+                        getResultBet(
+                            JSON.parse(localStorage.getItem('rollResult')),
+                            JSON.parse(localStorage.getItem('userBet'))
+                        )
+                    );
+                    setUserBet([0, 0, 0, 0, 0, 0]);
                     tagsData.forEach((state) => {
                         state[1]({});
                     });
+                    openDialog();
                 })
                 // eslint-disable-next-line prettier/prettier
                 .catch((error) => { });
@@ -220,6 +249,17 @@ const Game = () => {
     return (
         <Styled.Game>
             <RollStage isShow={isRoll} diceFace={diceFace} />
+            <Ranking isShow={isRank} roomID={searchParams.get('roomID')} setRank={setRank} />
+            <Dialog
+                title={() => {
+                    const result = JSON.parse(localStorage.getItem('rollResult'));
+                    result ? `[Kết quả: ${result[0]}, ${result[1]}, ${result[2]}]` : '';
+                }}
+                isShowing={isShowing}
+                hide={handleCloseResultDialog}
+            >
+                <ResultDialog resultData={resultData} />
+            </Dialog>
             <Styled.FixLayer>
                 {Object.entries(fixItems).map(([key, value]) => {
                     return value;
@@ -293,6 +333,14 @@ const Game = () => {
                 <Styled.Container>
                     <Styled.Footer justify="space-between" top={8}>
                         <Styled.Box>
+                            {role === 'user' ? (
+                                <Styled.MiniBtn>
+                                    <Styled.CenterIcon>
+                                        <FontAwesomeIcon icon={faCoins} />
+                                    </Styled.CenterIcon>
+                                    <Styled.CenterIcon>{gold}</Styled.CenterIcon>
+                                </Styled.MiniBtn>
+                            ) : null}
                             <Styled.TextField
                                 name="ROOM ID"
                                 readonly
@@ -307,6 +355,59 @@ const Game = () => {
                             <Styled.TextField name={role.toUpperCase()}>
                                 {name || 'admin'}
                             </Styled.TextField>
+                            {role === 'admin' ? (
+                                <Styled.MiniBtn
+                                    onClick={() => {
+                                        Admin.rollGame(searchParams.get('roomID'));
+                                    }}
+                                    clickable
+                                >
+                                    <Styled.CenterIcon>
+                                        <FontAwesomeIcon icon={faDice} />
+                                    </Styled.CenterIcon>
+                                    <Styled.CenterIcon>Lắc bầu cua</Styled.CenterIcon>
+                                </Styled.MiniBtn>
+                            ) : null}
+                            {role === 'admin' ? (
+                                <Styled.MiniBtn
+                                    onClick={() => {
+                                        Admin.resetGame(searchParams.get('roomID'));
+                                    }}
+                                    clickable
+                                >
+                                    <Styled.CenterIcon>
+                                        <FontAwesomeIcon icon={faStopCircle} />
+                                    </Styled.CenterIcon>
+                                    <Styled.CenterIcon>Reset game</Styled.CenterIcon>
+                                </Styled.MiniBtn>
+                            ) : null}
+                            {role === 'admin' ? (
+                                <Styled.MiniBtn
+                                    onClick={() => {
+                                        setRank((pre) => !pre);
+                                    }}
+                                    clickable
+                                >
+                                    <Styled.CenterIcon>
+                                        <FontAwesomeIcon icon={faTrophy} />
+                                    </Styled.CenterIcon>
+                                    <Styled.CenterIcon>Ranking</Styled.CenterIcon>
+                                </Styled.MiniBtn>
+                            ) : null}
+                        </Styled.Box>
+                        <Styled.Box>
+                            <Styled.MiniBtn
+                                clickable
+                                onClick={() => dispatch(signOut())}
+                                style={{
+                                    marginTop: 'auto',
+                                }}
+                            >
+                                <Styled.CenterIcon bgColor="#e74c3c">
+                                    <FontAwesomeIcon icon={faSignOutAlt} />
+                                </Styled.CenterIcon>
+                                <Styled.CenterIcon bgColor="#e74c3c">Đăng xuất</Styled.CenterIcon>
+                            </Styled.MiniBtn>
                         </Styled.Box>
                     </Styled.Footer>
                     <Styled.View>
@@ -321,6 +422,36 @@ const Game = () => {
                             role={role}
                         />
                     </Styled.View>
+                    <Styled.Footer justify="center">
+                        {role === 'user' ? (
+                            <Styled.MiniBtn
+                                clickable
+                                onClick={() => {
+                                    putBetWithServer(userBet);
+                                }}
+                            >
+                                <Styled.CenterIcon>
+                                    <FontAwesomeIcon icon={faCheckSquare} />
+                                </Styled.CenterIcon>
+                                <Styled.CenterIcon>Xác nhận đặt cược</Styled.CenterIcon>
+                            </Styled.MiniBtn>
+                        ) : null}
+                        {role === 'user' ? (
+                            <Styled.MiniBtn
+                                clickable
+                                onClick={() => {
+                                    const sum = userBet.reduce((pre, cur) => pre + cur, 0);
+                                    setUserBet(new Array(6).fill(0));
+                                    setGold(() => gold + sum);
+                                }}
+                            >
+                                <Styled.CenterIcon>
+                                    <FontAwesomeIcon icon={faRedo} />
+                                </Styled.CenterIcon>
+                                <Styled.CenterIcon>Đặt lại</Styled.CenterIcon>
+                            </Styled.MiniBtn>
+                        ) : null}
+                    </Styled.Footer>
                 </Styled.Container>
                 <BetBar list={userBet} />
             </Styled.Sides>
