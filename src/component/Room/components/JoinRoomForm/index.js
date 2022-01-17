@@ -22,7 +22,7 @@ function JoinRoomForm({ fetchingAllRooms = () => {}, roomId, setIsOpenOverlay })
             navigate(`/game?roomID=${value}`);
         } catch (error) {
             if (error.code === 400) {
-                Error('Bạn đã vào phòng trước đó.');
+                Error('Vào phòng thất bại.');
             } else {
                 Error('Vào phòng thất bại.');
             }

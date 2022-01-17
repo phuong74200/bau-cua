@@ -85,7 +85,7 @@ const Login = () => {
                     animation={true}
                     onClick={handleBtnLogin()}
                 >
-                    {isMobile ? 'Đăng nhập' : 'Đăng nhập với tài khoản Google'}
+                    {isMobile ? 'Đăng nhập' : 'Đăng nhập với mail @fpt.edu.vn'}
                 </ButtonBase>
                 <Styled.DiceWrapper>
                     <Dice front={ga} back={ca} top={tom} left={bau} right={cop} bottom={cua} />
