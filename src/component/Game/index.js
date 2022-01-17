@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 
+import { Success, Error } from '../../helpers/notify';
+import { signOut } from '../Login/loginSlice';
 import * as Admin from './AdminBar';
 import Board from './Board';
 import RollStage from './RollStage';
@@ -16,6 +19,8 @@ import 'react-toastify/dist/ReactToastify.css';
 const seedrandom = require('seedrandom');
 
 const Game = () => {
+    const navigateTo = useNavigate();
+    const dispatch = useDispatch();
     const dices = [useState(), useState(), useState()];
     const tagsData = [
         useState({}),
@@ -101,7 +106,7 @@ const Game = () => {
                 });
                 return pre - betValue;
             } else {
-                toast.error('Không đủ coin');
+                Error('Không đủ coin');
             }
             return pre;
         });
@@ -124,11 +129,18 @@ const Game = () => {
                 }
             )
             .then((res) => {
-                toast.success('Đặt cược thành công!');
+                Success('Đặt cược thành công!');
             })
             .catch((e) => {
                 const data = e.response.data;
-                toast.error(data.message);
+                Error(data.message);
+                if (
+                    e.response.status === 400 &&
+                    e.response.data.message === 'User must join room before bet'
+                ) {
+                    localStorage.removeItem('roomID');
+                    navigateTo('/room');
+                }
             });
     };
 
@@ -187,9 +199,9 @@ const Game = () => {
                     const data = res.data.data;
                     setGold((pre) => {
                         if (data.coin > pre) {
-                            toast.success(`You won ${data.coin - pre} coins`);
+                            Success(`Bạn đã thắng ${data.coin - pre} đồng`);
                         } else {
-                            toast.error(`You lose 5 coins`);
+                            Error(`Bạn đã thua 5 đồng`);
                         }
                         return data.coin;
                     });
@@ -214,8 +226,6 @@ const Game = () => {
     const copyRoomID = () => {
         navigator.clipboard.writeText(searchParams.get('roomID'));
     };
-
-    const navigateTo = useNavigate();
 
     const logout = () => {
         localStorage.removeItem('token');
@@ -242,7 +252,11 @@ const Game = () => {
                             )}
                         </Styled.Box>
                         <Styled.Box>
-                            <Styled.Button bgColor="#FF7878" isClick onClick={logout}>
+                            <Styled.Button
+                                bgColor="#FF7878"
+                                isClick
+                                onClick={() => dispatch(signOut())}
+                            >
                                 <span>Đăng xuất</span>
                             </Styled.Button>
                             <Styled.TextField
