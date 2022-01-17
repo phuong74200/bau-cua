@@ -23,7 +23,16 @@ const Polygon = ({ fill }) => {
     );
 };
 
-const Board = ({ tagsData = [], setUserBet, setGold, gold, userBet, canBet = true }) => {
+const Board = ({
+    tagsData = [],
+    setUserBet,
+    setGold,
+    gold,
+    userBet,
+    canBet = true,
+    setFixItems,
+    role,
+}) => {
     const slots = [tiger, calabash, chicken, shrimp, fish, crab];
     const color = [
         ['#A1CAE2', '#D7E9F7', '#D6E5FA'],
@@ -34,17 +43,42 @@ const Board = ({ tagsData = [], setUserBet, setGold, gold, userBet, canBet = tru
         ['#CAF7E3', '#EDFFEC', '#D5ECC2'],
     ];
 
-    const addBet = (index) => {
+    const addBet = (index, event) => {
+        const k = Math.random();
         setGold((pre) => {
-            if (pre >= 5) {
-                setUserBet((pre) => {
+            if (pre >= 5 && role === 'user') {
+                setUserBet(() => {
                     const clone = [...userBet];
                     clone[index] += 5;
                     return clone;
                 });
+                setFixItems((pre) => {
+                    let c = {
+                        ...pre,
+                        [k]: (
+                            <Styled.FlyUpAdd
+                                key={k}
+                                position={{ x: event.clientX, y: event.clientY }}
+                            >
+                                -5 Đồng
+                            </Styled.FlyUpAdd>
+                        ),
+                    };
+                    return c;
+                });
+                setTimeout(() => {
+                    setFixItems((pre) => {
+                        const c = { ...pre };
+                        delete [k];
+                        return c;
+                    }, 1000);
+                });
                 return gold - 5;
-            } else {
-                toast.error('Không đủ đồng.');
+            } else if (pre < 5) {
+                toast.error('Không đủ Đồng.');
+                return pre;
+            } else if (role === 'admin') {
+                toast.error('admin không thể tham gia chơi!');
                 return pre;
             }
         });
@@ -56,8 +90,8 @@ const Board = ({ tagsData = [], setUserBet, setGold, gold, userBet, canBet = tru
                 return (
                     <Styled.Slot
                         key={index}
-                        onClick={() => {
-                            addBet(index);
+                        onClick={(e) => {
+                            addBet(index, e);
                         }}
                     >
                         <Styled.Plate hoverColor={color[index][2]}>

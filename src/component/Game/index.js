@@ -7,7 +7,6 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { getResultBet, labelList } from '../../helpers/getResultBet';
 import { Success, Error } from '../../helpers/notify';
 import useDialog from '../../hooks/useDialog';
-import usePrevious from '../../hooks/usePrevious';
 import Dialog from '../Login/components/Dialog';
 import { signOut } from '../Login/loginSlice';
 import * as Admin from './AdminBar';
@@ -19,7 +18,14 @@ import * as CONFIG from './config';
 import * as Styled from './index.style';
 import socket from './socket';
 
-import 'react-toastify/dist/ReactToastify.css';
+import {
+    faDice,
+    faSignOutAlt,
+    faCheckSquare,
+    faRedo,
+    faStopCircle,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const seedrandom = require('seedrandom');
 
@@ -60,6 +66,7 @@ const Game = () => {
     const [name, setName] = useState('username');
     const [role, setRole] = useState('user');
     const [searchParams, setSearchParams] = useSearchParams();
+    const [fixItems, setFixItems] = useState({});
 
     useEffect(() => {
         _axios
@@ -124,6 +131,7 @@ const Game = () => {
                 localStorage.setItem('userBet', JSON.stringify(userBet));
             })
             .catch((e) => {
+                Error('Không thể đặt cược');
                 const data = e.response.data;
                 Error(data.message);
                 if (
@@ -196,6 +204,7 @@ const Game = () => {
         setDiceFace(face);
 
         setTimeout(() => {
+            const preCoin = gold;
             _axios
                 .get('/user')
                 .then((res) => {
@@ -212,19 +221,17 @@ const Game = () => {
                     setUserBet([0, 0, 0, 0, 0, 0]);
                     openDialog();
                 })
-                .catch((error) => {
-                    Success(error.response.data.message);
-                });
-            // eslint-disable-next-line react-hooks/exhaustive-deps
+                // eslint-disable-next-line prettier/prettier
+                .catch((error) => {});
             setRoll(false);
-            setTimeout(() => {
-                setDiceFace([
-                    [0, 0],
-                    [0, 0],
-                    [0, 0],
-                ]);
-            }, 5000);
         }, 10000);
+        setTimeout(() => {
+            setDiceFace([
+                [0, 0],
+                [0, 0],
+                [0, 0],
+            ]);
+        }, 11000);
     };
 
     const copyRoomID = () => {
@@ -254,49 +261,80 @@ const Game = () => {
             >
                 <ResultDialog resultData={resultData} />
             </Dialog>
+            <Styled.FixLayer>
+                {Object.entries(fixItems).map(([key, value]) => {
+                    return value;
+                })}
+            </Styled.FixLayer>
             <Styled.Sides>
+                <Styled.ToolBar>
+                    <Styled.MiniBtn>
+                        <span>{gold}</span>
+                        <div>Số lượng Đồng hiện đang có</div>
+                    </Styled.MiniBtn>
+                    {role === 'admin' ? (
+                        <Styled.MiniBtn
+                            onClick={() => {
+                                Admin.rollGame(searchParams.get('roomID'));
+                            }}
+                            clickable
+                        >
+                            <FontAwesomeIcon icon={faDice} />
+                            <div>Lắc bầu cua (admin only)</div>
+                        </Styled.MiniBtn>
+                    ) : null}
+                    {role === 'admin' ? (
+                        <Styled.MiniBtn
+                            onClick={() => {
+                                Admin.resetGame(searchParams.get('roomID'));
+                            }}
+                            clickable
+                        >
+                            <FontAwesomeIcon icon={faStopCircle} />
+                            <div>Reset game (lấy rank và xóa room)</div>
+                        </Styled.MiniBtn>
+                    ) : null}
+                    {role === 'user' ? (
+                        <Styled.MiniBtn
+                            clickable
+                            onClick={() => {
+                                setUserBet(new Array(6).fill(0));
+                                putBetWithServer(userBet);
+                            }}
+                        >
+                            <FontAwesomeIcon icon={faCheckSquare} />
+                            <div>Xác nhận đặt cược (không thể đặt lại)</div>
+                        </Styled.MiniBtn>
+                    ) : null}
+                    {role === 'user' ? (
+                        <Styled.MiniBtn
+                            clickable
+                            onClick={() => {
+                                const sum = userBet.reduce((pre, cur) => pre + cur, 0);
+                                setUserBet(new Array(6).fill(0));
+                                setGold(() => gold + sum);
+                            }}
+                        >
+                            <FontAwesomeIcon icon={faRedo} />
+                            <div>Đặt lại</div>
+                        </Styled.MiniBtn>
+                    ) : null}
+                    <Styled.MiniBtn
+                        clickable
+                        onClick={() => dispatch(signOut())}
+                        style={{
+                            marginTop: 'auto',
+                        }}
+                    >
+                        <FontAwesomeIcon icon={faSignOutAlt} />
+                        <div>Đăng xuất</div>
+                    </Styled.MiniBtn>
+                </Styled.ToolBar>
                 <Styled.Container>
                     <Styled.Footer justify="space-between" top={8}>
                         <Styled.Box>
-                            <Styled.Button>
-                                <span>Tiền của bạn: {gold}</span>
-                            </Styled.Button>
-                            {role === 'admin' ? (
-                                <Styled.Box>
-                                    <Admin.Roll />
-                                    <Admin.EndGame />
-                                </Styled.Box>
-                            ) : (
-                                <Styled.Button>{name}</Styled.Button>
-                            )}
-                            {role === 'user' ? (
-                                <Styled.Box>
-                                    <Styled.Button
-                                        bgColor="#07bc0c"
-                                        isClick
-                                        onClick={() => {
-                                            putBetWithServer(userBet);
-                                        }}
-                                    >
-                                        Xác nhận đặt cược
-                                    </Styled.Button>
-                                    <Styled.Button bgColor="#FF7878" isClick>
-                                        Đặt lại
-                                    </Styled.Button>
-                                </Styled.Box>
-                            ) : (
-                                <div></div>
-                            )}
-                        </Styled.Box>
-                        <Styled.Box>
-                            <Styled.Button
-                                bgColor="#FF7878"
-                                isClick
-                                onClick={() => dispatch(signOut())}
-                            >
-                                <span>Đăng xuất</span>
-                            </Styled.Button>
                             <Styled.TextField
+                                name="ROOM ID"
                                 readonly
                                 editable
                                 onClick={() => {
@@ -306,23 +344,23 @@ const Game = () => {
                             >
                                 {searchParams.get('roomID')}
                             </Styled.TextField>
+                            <Styled.TextField name={role.toUpperCase()}>{name}</Styled.TextField>
                         </Styled.Box>
                     </Styled.Footer>
                     <Styled.View>
                         <Board
+                            setFixItems={setFixItems}
                             tagsData={tagsData}
                             putBetWithServer={putBetWithServer}
                             setUserBet={setUserBet}
                             setGold={setGold}
                             gold={gold}
                             userBet={userBet}
+                            role={role}
                         />
                     </Styled.View>
-                    <Styled.Footer justify="center" bottom={8}>
-                        <BetBar list={userBet} />
-                    </Styled.Footer>
                 </Styled.Container>
-                <div></div>
+                <BetBar list={userBet} />
             </Styled.Sides>
         </Styled.Game>
     );

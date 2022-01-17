@@ -163,4 +163,28 @@ const TagShadow = styled.div.attrs(({ position, bet }) => ({
     transition: all 1s;
 `;
 
-export { Grid, Slot, Plate, Layer, Icon, TagContainer, Tag, TagShadow };
+const kFlyUp = keyframes`
+    from {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(-150px);
+        opacity: 0;
+    }
+`;
+
+const FlyUpAdd = styled.div.attrs(({ position }) => ({
+    style: {
+        top: `${position.y}px`,
+        left: `${position.x}px`,
+    },
+}))`
+    color: #ff7878;
+    position: absolute;
+    pointer-events: none;
+    font-size: 3rem;
+    animation: ${kFlyUp} 3s forwards;
+`;
+
+export { Grid, Slot, Plate, Layer, Icon, TagContainer, Tag, TagShadow, FlyUpAdd };
