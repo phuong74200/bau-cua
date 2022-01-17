@@ -12,15 +12,20 @@ const Grid = styled.div`
     padding: 50px;
     border-radius: 20px;
 
-    @media (max-width: 1280px) {
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: 1fr 1fr 1fr;
-        padding: 0.5px;
+    @media (max-height: 728px) {
+        width: 100%;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 1280px) {
+        width: 100%;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr;
+    }
+
+    @media (max-width: 992px) {
+        width: 100%;
         grid-template-columns: 1fr;
-        grid-template-rows: repeat(6, 1fr);
+        grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
     }
 `;
 
@@ -53,6 +58,10 @@ const Plate = styled.div`
     transition: all 0.3s;
     :hover {
         background: ${({ hoverColor }) => hoverColor};
+    }
+
+    @media (max-height: 728px) {
+        zoom: 0.5;
     }
 `;
 
