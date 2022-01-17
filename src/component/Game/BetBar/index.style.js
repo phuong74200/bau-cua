@@ -2,25 +2,39 @@ import styled from 'styled-components';
 
 const Container = styled.div`
     display: flex;
-    gap: 10px;
+    gap: 20px;
+    flex-direction: column;
+    justify-content: flex-end;
 `;
 
 const Side = styled.div`
-    display: grid;
-    grid-template-columns: 40px 40px;
+    width: 40px;
+    height: 40px;
+    position: relative;
 
     img {
-        width: 40px;
-        height: 40px;
+        object-fit: cover;
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    ::after {
+        right: -10px;
+        top: 0px;
+        z-index: 1;
+        font-weight: bold;
+        position: absolute;
+        background: white;
+        display: flex;
+        font-size: 1rem;
+        justify-content: center;
+        align-items: center;
+        content: '${({ qualities }) => qualities}';
+        width: 20px;
+        height: 20px;
+        border: 2px solid #f2f2f2;
+        border-radius: 50%;
     }
 `;
 
-const Text = styled.div`
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-`;
-
-export { Container, Side, Text };
+export { Container, Side };
