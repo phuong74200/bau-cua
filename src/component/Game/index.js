@@ -120,7 +120,6 @@ const Game = () => {
                     navigateTo('/room');
                 }
             });
-        toast.success('Đặt cược thành công');
     };
 
     const [isRoll, setRoll] = useState(false);
