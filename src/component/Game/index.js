@@ -71,9 +71,6 @@ const Game = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const playing = {};
-    const [playerCount, setPlayerCount] = useState(0);
-
     const scale = (number, inMin, inMax, outMin, outMax) => {
         return ((number - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
     };
@@ -116,6 +113,7 @@ const Game = () => {
             )
             .then((res) => {
                 Success('Đặt cược thành công!');
+                // setUserBet(new Array(6).fill(0));
             })
             .catch((e) => {
                 toast.error('Không thể đặt cược');
@@ -259,7 +257,6 @@ const Game = () => {
                         <Styled.MiniBtn
                             clickable
                             onClick={() => {
-                                setUserBet(new Array(6).fill(0));
                                 putBetWithServer(userBet);
                             }}
                         >
