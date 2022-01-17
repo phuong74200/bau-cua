@@ -13,7 +13,7 @@ const _axios = axios.create({
     },
 });
 
-const rollGame = (roomID, cb) => {
+const rollGame = (roomID, cb = () => {}) => {
     _axios
         .post(`/room/${roomID}/roll`, {
             id: roomID,
@@ -23,7 +23,7 @@ const rollGame = (roomID, cb) => {
         });
 };
 
-const resetGame = (roomID, cb) => {
+const resetGame = (roomID, cb = () => {}) => {
     _axios
         .post(`/room/${roomID}/reset`, {
             id: roomID,

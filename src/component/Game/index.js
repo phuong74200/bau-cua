@@ -12,7 +12,13 @@ import * as CONFIG from './config';
 import * as Styled from './index.style';
 import socket from './socket';
 
-import { faDice, faSignOutAlt, faCheckSquare } from '@fortawesome/free-solid-svg-icons';
+import {
+    faDice,
+    faSignOutAlt,
+    faCheckSquare,
+    faRedo,
+    faStopCircle,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const seedrandom = require('seedrandom');
@@ -88,7 +94,6 @@ const Game = () => {
     };
 
     const putBetWithServer = (userBet) => {
-        console.log(userBet);
         _axios
             .post(
                 `/room/${searchParams.get('roomID')}/bet`,
@@ -163,29 +168,30 @@ const Game = () => {
                 .get('/user')
                 .then((res) => {
                     const data = res.data.data;
-                    setGold((pre) => {
+                    setName(data.name);
+                    setRole(data.role);
+                    setGold(() => {
                         const sum = userBet.reduce((pre, cur) => pre + cur, 0);
-                        if (data.coin > sum) {
+                        if (data.coin > sum && sum > 0) {
                             toast.success(`You won ${data.coin - sum} coins`);
+                        } else {
+                            toast.error(`You lose ${sum - data.coin} coins`);
                         }
                         return data.coin;
                     });
-                    setName(data.name);
-                    setRole(data.role);
                 })
                 .catch((error) => {
                     toast.error(error.response.data.message);
                 });
-            // eslint-disable-next-line react-hooks/exhaustive-deps
             setRoll(false);
-            setTimeout(() => {
-                setDiceFace([
-                    [0, 0],
-                    [0, 0],
-                    [0, 0],
-                ]);
-            }, 5000);
         }, 10000);
+        setTimeout(() => {
+            setDiceFace([
+                [0, 0],
+                [0, 0],
+                [0, 0],
+            ]);
+        }, 14000);
     };
 
     const copyRoomID = () => {
@@ -197,12 +203,6 @@ const Game = () => {
     const logout = () => {
         localStorage.removeItem('token');
         navigateTo('/login');
-    };
-
-    const rollToServer = (roomID) => {
-        Admin.rollGame(roomID, () => {
-            Admin.resetGame(roomID);
-        });
     };
 
     return (
@@ -217,12 +217,23 @@ const Game = () => {
                     {role === 'admin' ? (
                         <Styled.MiniBtn
                             onClick={() => {
-                                rollToServer(searchParams.get('roomID'));
+                                Admin.rollGame(searchParams.get('roomID'));
                             }}
                             clickable
                         >
                             <FontAwesomeIcon icon={faDice} />
                             <div>Lắc bầu cua (admin only)</div>
+                        </Styled.MiniBtn>
+                    ) : null}
+                    {role === 'admin' ? (
+                        <Styled.MiniBtn
+                            onClick={() => {
+                                Admin.resetGame(searchParams.get('roomID'));
+                            }}
+                            clickable
+                        >
+                            <FontAwesomeIcon icon={faStopCircle} />
+                            <div>Reset game (lấy rank và xóa room)</div>
                         </Styled.MiniBtn>
                     ) : null}
                     <Styled.MiniBtn
@@ -232,6 +243,17 @@ const Game = () => {
                         }}
                     >
                         <FontAwesomeIcon icon={faCheckSquare} />
+                        <div>Xác nhận đặt cược (không thể đặt lại)</div>
+                    </Styled.MiniBtn>
+                    <Styled.MiniBtn
+                        clickable
+                        onClick={() => {
+                            const sum = userBet.reduce((pre, cur) => pre + cur, 0);
+                            setUserBet(new Array(6).fill(0));
+                            setGold(() => gold + sum);
+                        }}
+                    >
+                        <FontAwesomeIcon icon={faRedo} />
                         <div>Xác nhận đặt cược (không thể đặt lại)</div>
                     </Styled.MiniBtn>
                     <Styled.MiniBtn
