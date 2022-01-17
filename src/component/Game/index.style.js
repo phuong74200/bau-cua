@@ -96,9 +96,7 @@ const TextField = styled.div`
 `;
 
 const Sides = styled.div`
-    display: grid;
-    grid-template-columns: 1fr 300px;
-    grid-template-rows: 1fr;
+    display: flex;
 `;
 
 export { Game, Container, Footer, View, Button, Box, TextField, Sides };
