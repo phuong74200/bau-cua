@@ -66,24 +66,31 @@ export const Cube = styled.div`
         animation: 1.4s linear 0s 1 normal running ${animateMobile};
     }
 
-    & div {
+    & > div {
         position: absolute;
         box-sizing: border-box;
-        background-size: cover;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
         padding: 10px;
         height: 100%;
         width: 100%;
         color: #fff;
-        border: 1px solid #000;
-        border-radius: 5px;
-        /* background-color: #fff; */
+        border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    & > div > div {
+        background-size: cover;
+        height: 80%;
+        width: 80%;
     }
 `;
 export const Front = styled.div`
     background: #000;
     transform: translateZ(0px);
-    background-color: #a1cae2;
+    /* background-color: #a1cae2; */
+    background-color: ${(props) => props.bgrColor || '#fff'};
 
     ${down('md')} {
         transform: translateZ(-50px);
@@ -92,29 +99,34 @@ export const Front = styled.div`
 export const Back = styled.div`
     background: #000;
     transform: translateZ(-100px) rotateY(180deg);
-    background-color: #a685e2;
+    /* background-color: #a685e2; */
+    background-color: ${(props) => props.bgrColor || '#fff'};
 `;
 export const Top = styled.div`
     background: #000;
     transform-origin: top center;
     transform: rotateX(-270deg) translateY(-100px);
-    background-color: #ffb677;
+    /* background-color: #ffb677; */
+    background-color: ${(props) => props.bgrColor || '#fff'};
 `;
 export const Left = styled.div`
     background: #000;
     transform-origin: center left;
     transform: rotateY(270deg) translateX(-100px);
-    background-color: #ffc4d0;
+    /* background-color: #ffc4d0; */
+    background-color: ${(props) => props.bgrColor || '#fff'};
 `;
 export const Right = styled.div`
     background: #000;
     transform-origin: top right;
     transform: rotateY(-270deg) translateX(100px);
-    background-color: #ffaaa5;
+    /* background-color: #ffaaa5; */
+    background-color: ${(props) => props.bgrColor || '#fff'};
 `;
 export const Bottom = styled.div`
     background: #000;
     transform-origin: bottom center;
     transform: rotateX(270deg) translateY(100px);
-    background-color: #caf7e3;
+    /* background-color: #caf7e3; */
+    background-color: ${(props) => props.bgrColor || '#fff'};
 `;

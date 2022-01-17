@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -33,6 +33,11 @@ const Login = () => {
 
     const [isLoading, setIsLoading] = useState(false);
 
+    useEffect(() => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('roomID');
+    }, []);
+
     const onOAuthSuccess = async (OAuthToken, type = 'firebase') => {
         setIsLoading(true);
         try {
@@ -45,6 +50,7 @@ const Login = () => {
             navigate('/room');
         } catch (error) {
             Error('Đăng nhập thất bại.');
+            setIsLoading(false);
         } finally {
         }
     };
@@ -58,7 +64,7 @@ const Login = () => {
             PopupGoogleLogin()
                 .then(onFirebaseLoginSuccess)
                 .catch((ex) => {
-                    Error('Login failed, please try again!');
+                    Error('Đăng nhập lỗi, hãy thử lại!');
                 });
         };
     };

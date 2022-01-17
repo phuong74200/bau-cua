@@ -1,10 +1,10 @@
-import { BallTriangle } from 'react-loader-spinner';
+import { BallTriangle, TailSpin, Rings } from 'react-loader-spinner';
 import styled, { keyframes } from 'styled-components';
 
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 
 export default function Loader() {
-    return <BallTriangle color="#e74c3c" height={80} width={80} />;
+    return <TailSpin color="#e74c3c" height={80} width={80} />;
 }
 const spin = keyframes` 0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
