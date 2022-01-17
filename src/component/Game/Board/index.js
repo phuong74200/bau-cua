@@ -37,7 +37,7 @@ const Board = ({ tagsData = [], setUserBet, setGold, gold, userBet, canBet = tru
     const addBet = (index) => {
         setGold((pre) => {
             if (pre >= 5) {
-                setUserBet((pre) => {
+                setUserBet(() => {
                     const clone = [...userBet];
                     clone[index] += 5;
                     return clone;
