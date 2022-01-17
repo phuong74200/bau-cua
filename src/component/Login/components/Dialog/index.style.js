@@ -14,7 +14,7 @@ export const ModalWrapper = styled.div`
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 2;
+    z-index: 1000000;
     width: 100vw;
     height: 100vh;
     overflow-x: hidden;
@@ -30,6 +30,7 @@ export const StyledModal = styled.div`
     justify-content: center;
 `;
 export const ModalHeader = styled.div`
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -47,5 +48,8 @@ export const ModalMain = styled.div`
     border-radius: 3px;
     min-width: 350px;
     max-width: 90vw;
+
+    display: flex;
+    flex-direction: column;
 `;
 export const Title = styled.p``;

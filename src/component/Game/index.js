@@ -3,13 +3,17 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
 
+import { getResultBet, labelList } from '../../helpers/getResultBet';
 import { Success, Error } from '../../helpers/notify';
+import useDialog from '../../hooks/useDialog';
+import usePrevious from '../../hooks/usePrevious';
+import Dialog from '../Login/components/Dialog';
 import { signOut } from '../Login/loginSlice';
 import * as Admin from './AdminBar';
 import BetBar from './BetBar';
 import Board from './Board';
+import ResultDialog from './ResultDialog';
 import RollStage from './RollStage';
 import * as CONFIG from './config';
 import * as Styled from './index.style';
@@ -22,6 +26,17 @@ const seedrandom = require('seedrandom');
 const Game = () => {
     const navigateTo = useNavigate();
     const dispatch = useDispatch();
+
+    const [resultData, setResultData] = useState([]);
+    const [userBet, setUserBet] = useState([0, 0, 0, 0, 0, 0]);
+
+    const [isShowing, toggle, openDialog, closeDialog] = useDialog(false);
+    const handleCloseResultDialog = () => {
+        localStorage.removeItem('userBet');
+        localStorage.removeItem('rollResult');
+        closeDialog();
+    };
+
     const dices = [useState(), useState(), useState()];
     const tagsData = [
         useState({}),
@@ -45,7 +60,6 @@ const Game = () => {
     const [name, setName] = useState('username');
     const [role, setRole] = useState('user');
     const [searchParams, setSearchParams] = useSearchParams();
-    const [userBet, setUserBet] = useState([0, 0, 0, 0, 0, 0]);
 
     useEffect(() => {
         _axios
@@ -107,6 +121,7 @@ const Game = () => {
             )
             .then((res) => {
                 Success('Đặt cược thành công!');
+                localStorage.setItem('userBet', JSON.stringify(userBet));
             })
             .catch((e) => {
                 const data = e.response.data;
@@ -137,6 +152,7 @@ const Game = () => {
             }
             if (TYPE === 'roll') {
                 const data = message.data;
+                localStorage.setItem('rollResult', JSON.stringify(data.rollResult));
                 kick(data.rollResult);
             }
         };
@@ -152,6 +168,15 @@ const Game = () => {
     ]);
 
     const kick = (face = []) => {
+        // console.log('Result: ', face);
+        // console.log('User Bet', JSON.parse(localStorage.getItem('userBet')));
+        // console.log(
+        //     'Result: ',
+        //     getResultBet(
+        //         JSON.parse(localStorage.getItem('rollResult')),
+        //         JSON.parse(localStorage.getItem('userBet'))
+        //     )
+        // );
         const map = [
             [90, 0],
             [0, 0],
@@ -175,16 +200,17 @@ const Game = () => {
                 .get('/user')
                 .then((res) => {
                     const data = res.data.data;
-                    setGold((pre) => {
-                        if (data.coin > pre) {
-                            Success(`Bạn đã thắng ${data.coin - pre} đồng`);
-                        } else {
-                            Error(`Bạn đã thua ${data.coin - pre} đồng`);
-                        }
-                        return data.coin;
-                    });
+                    setGold(data.coin);
                     setName(data.name);
                     setRole(data.role);
+                    setResultData(
+                        getResultBet(
+                            JSON.parse(localStorage.getItem('rollResult')),
+                            JSON.parse(localStorage.getItem('userBet'))
+                        )
+                    );
+                    setUserBet([0, 0, 0, 0, 0, 0]);
+                    openDialog();
                 })
                 .catch((error) => {
                     Success(error.response.data.message);
@@ -213,6 +239,21 @@ const Game = () => {
     return (
         <Styled.Game>
             <RollStage isShow={isRoll} diceFace={diceFace} />
+            <Dialog
+                title={
+                    JSON.parse(localStorage.getItem('rollResult'))
+                        ? `[Kết quả: ${
+                              labelList[JSON.parse(localStorage.getItem('rollResult'))[0]]
+                          }, ${labelList[JSON.parse(localStorage.getItem('rollResult'))[1]]}, ${
+                              labelList[JSON.parse(localStorage.getItem('rollResult'))[2]]
+                          }]`
+                        : ''
+                }
+                isShowing={isShowing}
+                hide={handleCloseResultDialog}
+            >
+                <ResultDialog resultData={resultData} />
+            </Dialog>
             <Styled.Sides>
                 <Styled.Container>
                     <Styled.Footer justify="space-between" top={8}>
