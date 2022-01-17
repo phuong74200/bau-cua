@@ -307,7 +307,9 @@ const Game = () => {
                             >
                                 {searchParams.get('roomID')}
                             </Styled.TextField>
-                            <Styled.TextField name={role.toUpperCase()}>{name}</Styled.TextField>
+                            <Styled.TextField name={role.toUpperCase()}>
+                                {name || 'admin'}
+                            </Styled.TextField>
                         </Styled.Box>
                     </Styled.Footer>
                     <Styled.View>
