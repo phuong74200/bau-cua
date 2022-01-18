@@ -38,7 +38,7 @@ function Room() {
                 setRoomList(result.data);
             }
         } catch (error) {
-            Error('Lỗi server');
+            Error('Lỗi, hãy thử lại!');
         }
     }, []);
 

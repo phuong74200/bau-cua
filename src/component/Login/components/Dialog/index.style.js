@@ -1,5 +1,26 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
+const kShow = keyframes`
+    from {
+        margin-top: -36px;
+        opacity: 0;
+    }
+    to {
+        margin-top: 0px;
+        opacity: 1;  
+    }
+`;
+
+const kHide = keyframes`
+    from {
+        margin-top: 0px;
+        opacity: 1;
+    }
+    to {
+        margin-top: -36px;
+        opacity: 0;  
+    }
+`;
 export const ModalOverlay = styled.div`
     position: fixed;
     top: 0;
@@ -51,5 +72,7 @@ export const ModalMain = styled.div`
 
     display: flex;
     flex-direction: column;
+
+    animation: ${({ isShowing }) => (isShowing ? kShow : kHide)} 0.5s forwards;
 `;
 export const Title = styled.p``;

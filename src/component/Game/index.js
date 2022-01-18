@@ -251,7 +251,7 @@ const Game = () => {
                     });
                 })
                 // eslint-disable-next-line prettier/prettier
-                .catch((error) => { });
+                .catch((error) => {});
             setRoll(false);
         }, 10000);
         setTimeout(() => {
@@ -277,7 +277,9 @@ const Game = () => {
         const result = JSON.parse(localStorage.getItem('rollResult'));
         if (result)
             // eslint-disable-next-line prettier/prettier
-            return `[Kết quả: ${labelList[result[0]]}, ${labelList[result[1]]}, ${labelList[result[2]]}]`;
+            return `[Kết quả: ${labelList[result[0]]}, ${labelList[result[1]]}, ${
+                labelList[result[2]]
+            }]`;
         else return '';
     };
 
@@ -367,6 +369,35 @@ const Game = () => {
                                     <Styled.CenterIcon>Reset game</Styled.CenterIcon>
                                 </Styled.MiniBtn>
                             ) : null}
+                            {role === 'user' ? (
+                                <Styled.MiniBtn
+                                    clickable
+                                    isConfirm={isConfirm}
+                                    onClick={() => {
+                                        putBetWithServer(userBet);
+                                    }}
+                                >
+                                    <Styled.CenterIcon>
+                                        <FontAwesomeIcon icon={faCheckSquare} />
+                                    </Styled.CenterIcon>
+                                    <Styled.CenterIcon>Xác nhận đặt cược</Styled.CenterIcon>
+                                </Styled.MiniBtn>
+                            ) : null}
+                            {role === 'user' ? (
+                                <Styled.MiniBtn
+                                    clickable
+                                    onClick={() => {
+                                        const sum = userBet.reduce((pre, cur) => pre + cur, 0);
+                                        setUserBet(new Array(6).fill(0));
+                                        setGold(() => gold + sum);
+                                    }}
+                                >
+                                    <Styled.CenterIcon>
+                                        <FontAwesomeIcon icon={faRedo} />
+                                    </Styled.CenterIcon>
+                                    <Styled.CenterIcon>Đặt lại</Styled.CenterIcon>
+                                </Styled.MiniBtn>
+                            ) : null}
                             <Styled.MiniBtn
                                 clickable
                                 onClick={() => logout()}
@@ -393,37 +424,6 @@ const Game = () => {
                             role={role}
                         />
                     </Styled.View>
-                    <Styled.Footer justify="center">
-                        {role === 'user' ? (
-                            <Styled.MiniBtn
-                                clickable
-                                isConfirm={isConfirm}
-                                onClick={() => {
-                                    putBetWithServer(userBet);
-                                }}
-                            >
-                                <Styled.CenterIcon>
-                                    <FontAwesomeIcon icon={faCheckSquare} />
-                                </Styled.CenterIcon>
-                                <Styled.CenterIcon>Xác nhận đặt cược</Styled.CenterIcon>
-                            </Styled.MiniBtn>
-                        ) : null}
-                        {role === 'user' ? (
-                            <Styled.MiniBtn
-                                clickable
-                                onClick={() => {
-                                    const sum = userBet.reduce((pre, cur) => pre + cur, 0);
-                                    setUserBet(new Array(6).fill(0));
-                                    setGold(() => gold + sum);
-                                }}
-                            >
-                                <Styled.CenterIcon>
-                                    <FontAwesomeIcon icon={faRedo} />
-                                </Styled.CenterIcon>
-                                <Styled.CenterIcon>Đặt lại</Styled.CenterIcon>
-                            </Styled.MiniBtn>
-                        ) : null}
-                    </Styled.Footer>
                 </Styled.Container>
                 <BetBar list={userBet} />
             </Styled.Sides>

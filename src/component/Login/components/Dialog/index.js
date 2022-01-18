@@ -13,7 +13,7 @@ const Dialog = ({ isShowing, hide, children, title, ...others }) =>
                   <Styled.ModalWrapper aria-modal aria-hidden tabIndex={-1} role="dialog">
                       <Styled.ModalOverlay onClick={() => hide()} />
                       <Styled.StyledModal {...others}>
-                          <Styled.ModalMain>
+                          <Styled.ModalMain isShowing={isShowing}>
                               <Styled.ModalHeader>
                                   <Styled.Title>
                                       <b>{title}</b>
