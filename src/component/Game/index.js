@@ -367,7 +367,7 @@ const Game = () => {
                             ) : null}
                             <Styled.MiniBtn
                                 clickable
-                                onClick={() => localStorage.removeItem('roomID')}
+                                onClick={() => logout()}
                                 style={{
                                     marginTop: 'auto',
                                 }}
