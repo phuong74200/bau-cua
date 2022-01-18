@@ -313,8 +313,6 @@ const Game = () => {
         else return '';
     };
 
-    console.log('RoomData', roomData);
-
     return (
         <Styled.Game>
             <RollStage isShow={isRoll} diceFace={diceFace} />
@@ -358,7 +356,6 @@ const Game = () => {
                                     {roomData ? roomData.name : ''}
                                 </Styled.TextField>
                             )}
-
                             <Styled.TextField name={role.toUpperCase()}>
                                 {name || 'admin'}
                             </Styled.TextField>
