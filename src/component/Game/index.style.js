@@ -163,6 +163,7 @@ const MiniBtn = styled.div`
     color: white;
     cursor: ${({ isConfirm }) => (isConfirm ? 'not-allowed' : 'pointer')};
     opacity: ${({ isConfirm }) => (isConfirm ? 0.5 : 1)};
+    pointer-events: ${({ isConfirm }) => (isConfirm ? 'none' : 'auto')};
 `;
 
 const CenterIcon = styled.div`
