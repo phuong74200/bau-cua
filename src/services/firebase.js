@@ -5,6 +5,8 @@ import { firebaseConfig } from '../configurations/firebase';
 
 firebase.initializeApp(firebaseConfig);
 
+console.log('aaaaaaaaaaaa');
+
 export const auth = firebase.auth();
 const googleProvider = new firebase.auth.GoogleAuthProvider();
 export const signInWithGoogleRedirect = () => {
