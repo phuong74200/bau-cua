@@ -40,6 +40,7 @@ const Game = () => {
 
     const [resultData, setResultData] = useState([]);
     const [userBet, setUserBet] = useState([0, 0, 0, 0, 0, 0]);
+    const [roomData, setRoomData] = useState();
 
     const [isShowing, toggle, openDialog, closeDialog] = useDialog(false);
     const handleCloseResultDialog = () => {
@@ -85,6 +86,22 @@ const Game = () => {
                 if (error.response && error.response.status == 401) {
                     navigateTo('/login');
                 }
+            });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        axios
+            .get(`${CONFIG.BE_URL}/room/${searchParams.get('roomID')}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + localStorage.getItem('token'),
+                },
+            })
+            .then((res) => {
+                const data = res.data.data;
+                setRoomData(data);
+                console.log('data', data);
+            })
+            .catch((error) => {
+                console.log(error);
             });
         // eslint-disable-next-line react-hooks/exhaustive-deps
         axios
@@ -193,13 +210,15 @@ const Game = () => {
             }
             if (TYPE === 'roll' && searchParams.get('roomID') === message.data.room) {
                 const data = message.data;
+                kick(data.rollResult);
                 setConfirm(false);
                 localStorage.setItem('rollResult', JSON.stringify(data.rollResult));
                 tagsData.forEach((state) => {
                     state[1]({});
                 });
+                setUserBet([0, 0, 0, 0, 0, 0]);
                 closeDialog();
-                kick(data.rollResult);
+                setResultData([]);
             }
         };
         socket.on('events', listener);
@@ -279,9 +298,10 @@ const Game = () => {
         navigator.clipboard.writeText(searchParams.get('roomID'));
     };
 
-    const logout = () => {
+    const moveToRoom = () => {
         localStorage.removeItem('roomID');
         localStorage.removeItem('roomName');
+        setResultData([]);
         navigateTo('/room');
     };
 
@@ -292,6 +312,8 @@ const Game = () => {
             return `[Kết quả: ${labelList[result[0]]}, ${labelList[result[1]]}, ${labelList[result[2]]}]`;
         else return '';
     };
+
+    console.log('RoomData', roomData);
 
     return (
         <Styled.Game>
@@ -333,7 +355,7 @@ const Game = () => {
                                 </Styled.TextField>
                             ) : (
                                 <Styled.TextField name="Phòng" readonly editable>
-                                    {localStorage.getItem('roomName')}
+                                    {roomData ? roomData.name : ''}
                                 </Styled.TextField>
                             )}
 
@@ -419,7 +441,7 @@ const Game = () => {
                             ) : null}
                             <Styled.MiniBtn
                                 clickable
-                                onClick={() => logout()}
+                                onClick={() => moveToRoom()}
                                 style={{
                                     marginTop: 'auto',
                                 }}
