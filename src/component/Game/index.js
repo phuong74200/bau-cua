@@ -85,18 +85,29 @@ const Game = () => {
                 console.log(error);
             });
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        _axios
-            .get(`/room/${searchParams.get('roomID')}`)
+        axios
+            .get(`${CONFIG.BE_URL}/room/${searchParams.get('roomID')}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + localStorage.getItem('token'),
+                },
+            })
             .then((res) => {
                 const data = res.data.data;
                 setRoomData(data);
+                console.log('data', data);
             })
             .catch((error) => {
                 console.log(error);
             });
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        _axios
-            .get(`/room/${searchParams.get('roomID')}/bet`)
+        axios
+            .get(`${CONFIG.BE_URL}/room/${searchParams.get('roomID')}/bet`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + localStorage.getItem('token'),
+                },
+            })
             .then((res) => {
                 const data = res.data.data;
                 setConfirm(data.status);
