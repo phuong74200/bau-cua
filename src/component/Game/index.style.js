@@ -1,3 +1,4 @@
+import { down } from 'styled-breakpoints';
 import styled from 'styled-components';
 
 const Game = styled.div`
@@ -33,6 +34,9 @@ const Footer = styled.div`
     z-index: 1;
 
     min-width: 992px;
+    ${down('md')} {
+        min-width: 100%;
+    }
 `;
 
 const View = styled.div`
