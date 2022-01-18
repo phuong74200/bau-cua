@@ -32,6 +32,7 @@ const Board = ({
     canBet = true,
     setFixItems,
     role,
+    isConfirm,
 }) => {
     const slots = [tiger, calabash, chicken, shrimp, fish, crab];
     const color = [
@@ -60,7 +61,7 @@ const Board = ({
                                 key={k}
                                 position={{ x: event.clientX, y: event.clientY }}
                             >
-                                -5 Đồng
+                                {isConfirm ? 'Người chơi đã đặt cược!' : '-5'}
                             </Styled.FlyUpAdd>
                         ),
                     };
@@ -93,6 +94,7 @@ const Board = ({
                         onClick={(e) => {
                             addBet(index, e);
                         }}
+                        isDisable={isConfirm}
                     >
                         <Styled.Plate hoverColor={color[index][2]}>
                             <Styled.Layer duration={30 + index * 10}>

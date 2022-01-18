@@ -28,7 +28,11 @@ const Ranking = ({ isShow, roomID, setRank }) => {
             .then((res) => {
                 setList(res.data.data);
             })
-            .catch((e) => {});
+            .catch((error) => {
+                if (error.response && error.response.status == 401) {
+                    navigateTo('/login');
+                }
+            });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isShow]);
 

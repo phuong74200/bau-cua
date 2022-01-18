@@ -5,7 +5,8 @@ import axios from 'axios';
 import { Success, Error } from '../../../helpers/notify';
 import * as CONFIG from '../config';
 
-const rollGame = (roomID, cb = () => {}) => {
+// eslint-disable-next-line prettier/prettier
+const rollGame = (roomID, cb = () => { }) => {
     axios
         .post(
             `${CONFIG.BE_URL}/room/${roomID}/roll`,
@@ -21,10 +22,16 @@ const rollGame = (roomID, cb = () => {}) => {
         )
         .then((res) => {
             cb(res);
+        })
+        .catch((error) => {
+            if (error.response && error.response.status == 401) {
+                navigateTo('/login');
+            }
         });
 };
 
-const resetGame = (roomID, cb = () => {}) => {
+// eslint-disable-next-line prettier/prettier
+const resetGame = (roomID, cb = () => { }) => {
     axios
         .post(
             `${CONFIG.BE_URL}/room/${roomID}/reset`,
@@ -42,8 +49,11 @@ const resetGame = (roomID, cb = () => {}) => {
             cb(res);
             Success('Reset game thành công.');
         })
-        .catch((e) => {
+        .catch((error) => {
             Error('Không thể reset game!');
+            if (error.response && error.response.status == 401) {
+                navigateTo('/login');
+            }
         });
 };
 

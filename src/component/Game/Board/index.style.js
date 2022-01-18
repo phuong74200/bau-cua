@@ -37,7 +37,7 @@ const Slot = styled.div`
     justify-content: center;
     align-items: center;
     cursor: pointer;
-
+    pointer-events: ${({ isDisable }) => (isDisable ? 'none' : 'auto')};
     img {
         max-width: 100px;
         max-height: 100%;

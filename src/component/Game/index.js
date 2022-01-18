@@ -65,6 +65,7 @@ const Game = () => {
     const [fixItems, setFixItems] = useState({});
     const [isRank, setRank] = useState(false);
     const [isConfirm, setConfirm] = useState(false);
+    const [rollDisable, setRollDisable] = useState(false);
 
     useEffect(() => {
         axios
@@ -81,7 +82,9 @@ const Game = () => {
                 setRole(data.role);
             })
             .catch((error) => {
-                console.log(error);
+                if (error.response && error.response.status == 401) {
+                    navigateTo('/login');
+                }
             });
         // eslint-disable-next-line react-hooks/exhaustive-deps
         axios
@@ -96,7 +99,9 @@ const Game = () => {
                 setConfirm(data.status);
             })
             .catch((error) => {
-                console.log(error);
+                if (error.response && error.response.status == 401) {
+                    navigateTo('/login');
+                }
             });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -166,6 +171,9 @@ const Game = () => {
                     localStorage.removeItem('roomID');
                     Error('Bạn hãy tham gia phòng để bắt đầu trò chơi.');
                     navigateTo('/room');
+                }
+                if (error.response && error.response.status == 401) {
+                    navigateTo('/login');
                 }
             });
     };
@@ -251,7 +259,11 @@ const Game = () => {
                     });
                 })
                 // eslint-disable-next-line prettier/prettier
-                .catch((error) => {});
+                .catch((error) => {
+                    if (error.response && error.response.status == 401) {
+                        navigateTo('/login');
+                    }
+                });
             setRoll(false);
         }, 10000);
         setTimeout(() => {
@@ -277,16 +289,16 @@ const Game = () => {
         const result = JSON.parse(localStorage.getItem('rollResult'));
         if (result)
             // eslint-disable-next-line prettier/prettier
-            return `[Kết quả: ${labelList[result[0]]}, ${labelList[result[1]]}, ${
-                labelList[result[2]]
-            }]`;
+            return `[Kết quả: ${labelList[result[0]]}, ${labelList[result[1]]}, ${labelList[result[2]]}]`;
         else return '';
     };
 
     return (
         <Styled.Game>
             <RollStage isShow={isRoll} diceFace={diceFace} />
-            <Ranking isShow={isRank} roomID={searchParams.get('roomID')} setRank={setRank} />
+            {role === 'admin' ? (
+                <Ranking isShow={isRank} roomID={searchParams.get('roomID')} setRank={setRank} />
+            ) : null}
             <Dialog title={getTitle()} isShowing={isShowing} hide={handleCloseResultDialog}>
                 <ResultDialog resultData={resultData} />
             </Dialog>
@@ -331,9 +343,14 @@ const Game = () => {
                             {role === 'admin' ? (
                                 <Styled.MiniBtn
                                     onClick={() => {
+                                        setRollDisable(true);
                                         Admin.rollGame(searchParams.get('roomID'));
+                                        setTimeout(() => {
+                                            setRollDisable(false);
+                                        }, 1000);
                                     }}
                                     clickable
+                                    isConfirm={rollDisable}
                                 >
                                     <Styled.CenterIcon>
                                         <FontAwesomeIcon icon={faDice} />
@@ -377,10 +394,12 @@ const Game = () => {
                                         putBetWithServer(userBet);
                                     }}
                                 >
-                                    <Styled.CenterIcon>
+                                    <Styled.CenterIcon isConfirm={isConfirm}>
                                         <FontAwesomeIcon icon={faCheckSquare} />
                                     </Styled.CenterIcon>
-                                    <Styled.CenterIcon>Xác nhận đặt cược</Styled.CenterIcon>
+                                    <Styled.CenterIcon isConfirm={isConfirm}>
+                                        {isConfirm ? 'Đã đặt cược' : 'Xác nhận đặt cược'}
+                                    </Styled.CenterIcon>
                                 </Styled.MiniBtn>
                             ) : null}
                             {role === 'user' ? (
@@ -422,6 +441,7 @@ const Game = () => {
                             gold={gold}
                             userBet={userBet}
                             role={role}
+                            isConfirm={isConfirm}
                         />
                     </Styled.View>
                 </Styled.Container>
