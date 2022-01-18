@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import axios from 'axios';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 
@@ -10,7 +10,7 @@ import { Success, Error } from '../../helpers/notify';
 import useDialog from '../../hooks/useDialog';
 import usePrevious from '../../hooks/usePrevious';
 import Dialog from '../Login/components/Dialog';
-import { signOut } from '../Login/loginSlice';
+import { signOut, userDataSelector } from '../Login/loginSlice';
 import * as Admin from './AdminBar';
 import BetBar from './BetBar';
 import Board from './Board';
@@ -135,7 +135,9 @@ const Game = () => {
                 setUserBet(new Array(6).fill(0));
             })
             .catch((e) => {
-                toast.error('Không thể đặt cược, bạn chỉ có thể đặt cược 1 lần trong 1 lượt chơi.');
+                toast.error(
+                    'Không thể đặt cược hoặc bạn chỉ có thể đặt cược 1 lần trong 1 lượt chơi.'
+                );
                 const sum = userBet.reduce((pre, cur) => pre + cur, 0);
                 setUserBet(new Array(6).fill(0));
                 setGold(() => gold + sum);
@@ -210,18 +212,16 @@ const Game = () => {
                 .get('/user')
                 .then((res) => {
                     const data = res.data.data;
+                    openDialog();
                     setGold(data.coin);
                     setName(data.name);
                     setRole(data.role);
-
-                    openDialog();
                     setResultData(
                         getResultBet(
                             JSON.parse(localStorage.getItem('rollResult')),
                             JSON.parse(localStorage.getItem('userBet'))
                         )
                     );
-
                     setUserBet([0, 0, 0, 0, 0, 0]);
                     tagsData.forEach((state) => {
                         state[1]({});
@@ -246,6 +246,7 @@ const Game = () => {
 
     const logout = () => {
         localStorage.removeItem('roomID');
+        localStorage.removeItem('roomName');
         navigateTo('/room');
     };
 
@@ -282,17 +283,24 @@ const Game = () => {
                                     <Styled.CenterIcon>{gold}</Styled.CenterIcon>
                                 </Styled.MiniBtn>
                             ) : null}
-                            <Styled.TextField
-                                name="ROOM ID"
-                                readonly
-                                editable
-                                onClick={() => {
-                                    copyRoomID();
-                                    Success('RoomID đã được sao chép!');
-                                }}
-                            >
-                                {searchParams.get('roomID')}
-                            </Styled.TextField>
+                            {role === 'admin' ? (
+                                <Styled.TextField
+                                    name="ROOM ID"
+                                    readonly
+                                    editable
+                                    onClick={() => {
+                                        copyRoomID();
+                                        Success('RoomID đã được sao chép!');
+                                    }}
+                                >
+                                    {searchParams.get('roomID')}
+                                </Styled.TextField>
+                            ) : (
+                                <Styled.TextField name="Phòng" readonly editable>
+                                    {localStorage.getItem('roomName')}
+                                </Styled.TextField>
+                            )}
+
                             <Styled.TextField name={role.toUpperCase()}>
                                 {name || 'admin'}
                             </Styled.TextField>

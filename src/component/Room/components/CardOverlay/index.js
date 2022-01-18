@@ -14,6 +14,7 @@ function CardOverlay({
     option = '',
     fetchingAllRooms = () => {},
     roomId,
+    roomName,
 }) {
     const renderForm = () => {
         switch (option) {
@@ -31,6 +32,7 @@ function CardOverlay({
                         roomId={roomId}
                         fetchingAllRooms={fetchingAllRooms}
                         setIsOpenOverlay={setIsOpenOverlay}
+                        roomName={roomName}
                     />
                 );
             case 'delete':

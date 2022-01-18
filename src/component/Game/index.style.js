@@ -86,6 +86,7 @@ const TextField = styled.div`
         left: 8px;
         padding: 0px 8px;
         font-size: 1.1rem;
+        min-width: 50px;
     }
 
     &:hover {

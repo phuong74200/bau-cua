@@ -7,7 +7,7 @@ import roomApi from '../../../../services/api/roomApi';
 import ButtonBase from '../../../Login/components/Button/ButtonBase';
 import * as Styled from './index.style';
 
-function JoinRoomForm({ fetchingAllRooms = () => {}, roomId, setIsOpenOverlay }) {
+function JoinRoomForm({ fetchingAllRooms = () => {}, roomId, roomName, setIsOpenOverlay }) {
     const navigate = useNavigate();
     const [value, setValue] = useState('');
 
@@ -18,6 +18,7 @@ function JoinRoomForm({ fetchingAllRooms = () => {}, roomId, setIsOpenOverlay })
         try {
             let result = await roomApi.joinRoom(value);
             localStorage.setItem('roomID', value);
+            localStorage.setItem('roomName', roomName);
             Success('Vào phòng thành công.');
             navigate(`/game?roomID=${value}`);
         } catch (error) {
