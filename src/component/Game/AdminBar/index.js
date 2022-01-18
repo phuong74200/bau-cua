@@ -2,6 +2,7 @@ import React from 'react';
 
 import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 
 import * as CONFIG from '../config';
 
@@ -30,6 +31,10 @@ const resetGame = (roomID, cb = () => {}) => {
         })
         .then((res) => {
             cb(res);
+            toast.success('Game đã được reset');
+        })
+        .catch((res) => {
+            toast.error('Không thể reset game!');
         });
 };
 

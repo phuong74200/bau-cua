@@ -156,7 +156,7 @@ const Game = () => {
     useEffect(() => {
         const listener = (message) => {
             const TYPE = message.type;
-            if (TYPE === 'bet') {
+            if (TYPE === 'bet' && searchParams.get('roomID') === message.data.room) {
                 const slot = message.data.bet;
                 slot.forEach((value, index) => {
                     if (value > 0) {
@@ -164,12 +164,13 @@ const Game = () => {
                     }
                 });
             }
-            if (TYPE === 'roll') {
+            if (TYPE === 'roll' && searchParams.get('roomID') === message.data.room) {
                 const data = message.data;
                 localStorage.setItem('rollResult', JSON.stringify(data.rollResult));
                 tagsData.forEach((state) => {
                     state[1]({});
                 });
+                closeDialog();
                 kick(data.rollResult);
             }
         };
@@ -307,19 +308,6 @@ const Game = () => {
                             {role === 'admin' ? (
                                 <Styled.MiniBtn
                                     onClick={() => {
-                                        Admin.resetGame(searchParams.get('roomID'));
-                                    }}
-                                    clickable
-                                >
-                                    <Styled.CenterIcon>
-                                        <FontAwesomeIcon icon={faStopCircle} />
-                                    </Styled.CenterIcon>
-                                    <Styled.CenterIcon>Reset game</Styled.CenterIcon>
-                                </Styled.MiniBtn>
-                            ) : null}
-                            {role === 'admin' ? (
-                                <Styled.MiniBtn
-                                    onClick={() => {
                                         setRank((pre) => !pre);
                                     }}
                                     clickable
@@ -332,6 +320,19 @@ const Game = () => {
                             ) : null}
                         </Styled.Box>
                         <Styled.Box>
+                            {role === 'admin' ? (
+                                <Styled.MiniBtn
+                                    onClick={() => {
+                                        Admin.resetGame(searchParams.get('roomID'));
+                                    }}
+                                    clickable
+                                >
+                                    <Styled.CenterIcon>
+                                        <FontAwesomeIcon icon={faStopCircle} />
+                                    </Styled.CenterIcon>
+                                    <Styled.CenterIcon>Reset game</Styled.CenterIcon>
+                                </Styled.MiniBtn>
+                            ) : null}
                             <Styled.MiniBtn
                                 clickable
                                 onClick={() => dispatch(signOut())}

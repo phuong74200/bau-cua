@@ -21,7 +21,6 @@ const Ranking = ({ isShow, roomID, setRank }) => {
             },
         });
         _axios.post(`/room/${roomID}/get-rank`, { id: roomID }).then((res) => {
-            console.log(res.data.data);
             setList(res.data.data);
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -42,7 +41,7 @@ const Ranking = ({ isShow, roomID, setRank }) => {
                     return (
                         <Styled.LowTop key={index}>
                             <Styled.Text weight="bold">#{index + 1}</Styled.Text>
-                            <Styled.Text>{item.name}</Styled.Text>
+                            <Styled.Text>{item.email}</Styled.Text>
                             <Styled.Text justify="flex-end">{item.coin} coins</Styled.Text>
                         </Styled.LowTop>
                     );

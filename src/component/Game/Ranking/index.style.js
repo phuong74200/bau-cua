@@ -36,7 +36,7 @@ const kHide = keyframes`
 const Container = styled.div`
     background: #f2f2f2;
     border-radius: 20px;
-    width: 500px;
+    min-width: 500px;
     z-index: 20;
     height: auto;
     display: grid;
