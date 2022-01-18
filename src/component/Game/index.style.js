@@ -9,6 +9,8 @@ const Game = styled.div`
     align-items: center;
     user-select: none;
     font-family: Montserrat;
+
+    margin: 3.2rem 0;
 `;
 
 const Container = styled.div`

@@ -337,9 +337,37 @@ const Game = () => {
                             ) : null}
                         </Styled.Box>
                         <Styled.Box>
+                            {role === 'user' ? (
+                                <Styled.MiniBtn
+                                    clickable
+                                    onClick={() => {
+                                        putBetWithServer(userBet);
+                                    }}
+                                >
+                                    <Styled.CenterIcon>
+                                        <FontAwesomeIcon icon={faCheckSquare} />
+                                    </Styled.CenterIcon>
+                                    <Styled.CenterIcon>Xác nhận đặt cược</Styled.CenterIcon>
+                                </Styled.MiniBtn>
+                            ) : null}
+                            {role === 'user' ? (
+                                <Styled.MiniBtn
+                                    clickable
+                                    onClick={() => {
+                                        const sum = userBet.reduce((pre, cur) => pre + cur, 0);
+                                        setUserBet(new Array(6).fill(0));
+                                        setGold(() => gold + sum);
+                                    }}
+                                >
+                                    <Styled.CenterIcon>
+                                        <FontAwesomeIcon icon={faRedo} />
+                                    </Styled.CenterIcon>
+                                    <Styled.CenterIcon>Đặt lại</Styled.CenterIcon>
+                                </Styled.MiniBtn>
+                            ) : null}
                             <Styled.MiniBtn
                                 clickable
-                                onClick={() => dispatch(signOut())}
+                                onClick={() => localStorage.removeItem('roomID')}
                                 style={{
                                     marginTop: 'auto',
                                 }}
@@ -347,7 +375,7 @@ const Game = () => {
                                 <Styled.CenterIcon bgColor="#e74c3c">
                                     <FontAwesomeIcon icon={faSignOutAlt} />
                                 </Styled.CenterIcon>
-                                <Styled.CenterIcon bgColor="#e74c3c">Đăng xuất</Styled.CenterIcon>
+                                <Styled.CenterIcon bgColor="#e74c3c">Rời phòng</Styled.CenterIcon>
                             </Styled.MiniBtn>
                         </Styled.Box>
                     </Styled.Footer>
@@ -363,36 +391,7 @@ const Game = () => {
                             role={role}
                         />
                     </Styled.View>
-                    <Styled.Footer justify="center">
-                        {role === 'user' ? (
-                            <Styled.MiniBtn
-                                clickable
-                                onClick={() => {
-                                    putBetWithServer(userBet);
-                                }}
-                            >
-                                <Styled.CenterIcon>
-                                    <FontAwesomeIcon icon={faCheckSquare} />
-                                </Styled.CenterIcon>
-                                <Styled.CenterIcon>Xác nhận đặt cược</Styled.CenterIcon>
-                            </Styled.MiniBtn>
-                        ) : null}
-                        {role === 'user' ? (
-                            <Styled.MiniBtn
-                                clickable
-                                onClick={() => {
-                                    const sum = userBet.reduce((pre, cur) => pre + cur, 0);
-                                    setUserBet(new Array(6).fill(0));
-                                    setGold(() => gold + sum);
-                                }}
-                            >
-                                <Styled.CenterIcon>
-                                    <FontAwesomeIcon icon={faRedo} />
-                                </Styled.CenterIcon>
-                                <Styled.CenterIcon>Đặt lại</Styled.CenterIcon>
-                            </Styled.MiniBtn>
-                        ) : null}
-                    </Styled.Footer>
+                    <Styled.Footer justify="center"></Styled.Footer>
                 </Styled.Container>
                 <BetBar list={userBet} />
             </Styled.Sides>
