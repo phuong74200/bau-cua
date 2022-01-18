@@ -1,9 +1,8 @@
 import React from 'react';
 
 import axios from 'axios';
-import { useSearchParams } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
 
+import { Success, Error } from '../../../helpers/notify';
 import * as CONFIG from '../config';
 
 const _axios = axios.create({
@@ -31,10 +30,10 @@ const resetGame = (roomID, cb = () => {}) => {
         })
         .then((res) => {
             cb(res);
-            toast.success('Game đã được reset');
+            Success('Reset game thành công.');
         })
-        .catch((res) => {
-            toast.error('Không thể reset game!');
+        .catch((e) => {
+            Error('Không thể reset game!');
         });
 };
 

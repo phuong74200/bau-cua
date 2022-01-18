@@ -78,7 +78,7 @@ const Board = ({
                 toast.error('Không đủ Đồng.');
                 return pre;
             } else if (role === 'admin') {
-                toast.error('admin không thể tham gia chơi!');
+                toast.error('Admin không thể tham gia chơi!');
                 return pre;
             }
         });

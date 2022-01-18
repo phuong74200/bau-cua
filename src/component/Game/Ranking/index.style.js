@@ -13,7 +13,7 @@ const Top = styled.div`
 
 const kShow = keyframes`
     from {
-        margin-top: -16px;
+        margin-top: -36px;
         opacity: 0;
     }
     to {
@@ -28,7 +28,7 @@ const kHide = keyframes`
         opacity: 1;
     }
     to {
-        margin-top: -16px;
+        margin-top: -36px;
         opacity: 0;  
     }
 `;
@@ -48,7 +48,7 @@ const Container = styled.div`
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
-    animation: ${({ isShow }) => (isShow ? kShow : kHide)} 1s forwards;
+    animation: ${({ isShow }) => (isShow ? kShow : kHide)} 0.5s forwards;
 `;
 
 const TopContainer = styled.div`

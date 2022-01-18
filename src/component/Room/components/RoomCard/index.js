@@ -62,6 +62,7 @@ function RoomCard({ bgrImage, roomInfo, index, fetchingAllRooms }) {
     const handleClickJoin = async () => {
         if (userData.role === ADMIN_ROLE) {
             localStorage.setItem('roomID', roomInfo._id);
+            localStorage.setItem('roomName', roomInfo.name);
             navigate(`/game?roomID=${roomInfo._id}`);
             return;
         }
@@ -97,6 +98,7 @@ function RoomCard({ bgrImage, roomInfo, index, fetchingAllRooms }) {
                 option={option}
                 fetchingAllRooms={fetchingAllRooms}
                 roomId={roomInfo._id}
+                roomName={roomInfo.name}
             />
             {/* <Styled.CardImage style={{ backgroundImage: `url(${bgrImage})` }}></Styled.CardImage> */}
             <Styled.Slot>

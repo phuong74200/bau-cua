@@ -39,7 +39,7 @@ const Ranking = ({ isShow, roomID, setRank }) => {
             <Styled.LowTopContainer>
                 {list.map((item, index) => {
                     return (
-                        <Styled.LowTop key={index}>
+                        <Styled.LowTop key={item.email}>
                             <Styled.Text weight="bold">#{index + 1}</Styled.Text>
                             <Styled.Text>{item.email}</Styled.Text>
                             <Styled.Text justify="flex-end">{item.coin} coins</Styled.Text>

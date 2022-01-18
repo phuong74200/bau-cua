@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import axios from 'axios';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 
@@ -10,7 +10,7 @@ import { Success, Error } from '../../helpers/notify';
 import useDialog from '../../hooks/useDialog';
 import usePrevious from '../../hooks/usePrevious';
 import Dialog from '../Login/components/Dialog';
-import { signOut } from '../Login/loginSlice';
+import { signOut, userDataSelector } from '../Login/loginSlice';
 import * as Admin from './AdminBar';
 import BetBar from './BetBar';
 import Board from './Board';
@@ -73,6 +73,7 @@ const Game = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [fixItems, setFixItems] = useState({});
     const [isRank, setRank] = useState(false);
+    const [isConfirm, setConfirm] = useState(false);
 
     useEffect(() => {
         _axios
@@ -82,6 +83,16 @@ const Game = () => {
                 setGold(data.coin);
                 setName(data.name);
                 setRole(data.role);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        _axios
+            .get(`/room/${searchParams.get('roomID')}/bet`)
+            .then((res) => {
+                const data = res.data.data;
+                setConfirm(data.status);
             })
             .catch((error) => {
                 console.log(error);
@@ -131,11 +142,14 @@ const Game = () => {
             )
             .then((res) => {
                 Success('Đặt cược thành công!');
+                setConfirm(true);
                 localStorage.setItem('userBet', JSON.stringify(userBet));
                 setUserBet(new Array(6).fill(0));
             })
             .catch((e) => {
-                toast.error('Không thể đặt cược');
+                toast.error(
+                    'Không thể đặt cược hoặc bạn chỉ có thể đặt cược 1 lần trong 1 lượt chơi.'
+                );
                 const sum = userBet.reduce((pre, cur) => pre + cur, 0);
                 setUserBet(new Array(6).fill(0));
                 setGold(() => gold + sum);
@@ -166,6 +180,7 @@ const Game = () => {
             }
             if (TYPE === 'roll' && searchParams.get('roomID') === message.data.room) {
                 const data = message.data;
+                setConfirm(false);
                 localStorage.setItem('rollResult', JSON.stringify(data.rollResult));
                 tagsData.forEach((state) => {
                     state[1]({});
@@ -210,6 +225,7 @@ const Game = () => {
                 .get('/user')
                 .then((res) => {
                     const data = res.data.data;
+                    openDialog();
                     setGold(data.coin);
                     setName(data.name);
                     setRole(data.role);
@@ -219,7 +235,6 @@ const Game = () => {
                             JSON.parse(localStorage.getItem('userBet'))
                         )
                     );
-                    openDialog();
                     setUserBet([0, 0, 0, 0, 0, 0]);
                     tagsData.forEach((state) => {
                         state[1]({});
@@ -244,21 +259,23 @@ const Game = () => {
 
     const logout = () => {
         localStorage.removeItem('roomID');
+        localStorage.removeItem('roomName');
         navigateTo('/room');
+    };
+
+    const getTitle = () => {
+        const result = JSON.parse(localStorage.getItem('rollResult'));
+        if (result)
+            // eslint-disable-next-line prettier/prettier
+            return `[Kết quả: ${labelList[result[0]]}, ${labelList[result[1]]}, ${labelList[result[2]]}]`;
+        else return '';
     };
 
     return (
         <Styled.Game>
             <RollStage isShow={isRoll} diceFace={diceFace} />
             <Ranking isShow={isRank} roomID={searchParams.get('roomID')} setRank={setRank} />
-            <Dialog
-                title={() => {
-                    const result = JSON.parse(localStorage.getItem('rollResult'));
-                    result ? `[Kết quả: ${result[0]}, ${result[1]}, ${result[2]}]` : '';
-                }}
-                isShowing={isShowing}
-                hide={handleCloseResultDialog}
-            >
+            <Dialog title={getTitle()} isShowing={isShowing} hide={handleCloseResultDialog}>
                 <ResultDialog resultData={resultData} />
             </Dialog>
             <Styled.FixLayer>
@@ -278,17 +295,24 @@ const Game = () => {
                                     <Styled.CenterIcon>{gold}</Styled.CenterIcon>
                                 </Styled.MiniBtn>
                             ) : null}
-                            <Styled.TextField
-                                name="ROOM ID"
-                                readonly
-                                editable
-                                onClick={() => {
-                                    copyRoomID();
-                                    Success('RoomID đã được sao chép!');
-                                }}
-                            >
-                                {searchParams.get('roomID')}
-                            </Styled.TextField>
+                            {role === 'admin' ? (
+                                <Styled.TextField
+                                    name="ROOM ID"
+                                    readonly
+                                    editable
+                                    onClick={() => {
+                                        copyRoomID();
+                                        Success('RoomID đã được sao chép!');
+                                    }}
+                                >
+                                    {searchParams.get('roomID')}
+                                </Styled.TextField>
+                            ) : (
+                                <Styled.TextField name="Phòng" readonly editable>
+                                    {localStorage.getItem('roomName')}
+                                </Styled.TextField>
+                            )}
+
                             <Styled.TextField name={role.toUpperCase()}>
                                 {name || 'admin'}
                             </Styled.TextField>
@@ -335,7 +359,7 @@ const Game = () => {
                             ) : null}
                             <Styled.MiniBtn
                                 clickable
-                                onClick={() => dispatch(signOut())}
+                                onClick={() => logout()}
                                 style={{
                                     marginTop: 'auto',
                                 }}
@@ -343,7 +367,7 @@ const Game = () => {
                                 <Styled.CenterIcon bgColor="#e74c3c">
                                     <FontAwesomeIcon icon={faSignOutAlt} />
                                 </Styled.CenterIcon>
-                                <Styled.CenterIcon bgColor="#e74c3c">Đăng xuất</Styled.CenterIcon>
+                                <Styled.CenterIcon bgColor="#e74c3c">Rời phòng</Styled.CenterIcon>
                             </Styled.MiniBtn>
                         </Styled.Box>
                     </Styled.Footer>
@@ -363,6 +387,7 @@ const Game = () => {
                         {role === 'user' ? (
                             <Styled.MiniBtn
                                 clickable
+                                isConfirm={isConfirm}
                                 onClick={() => {
                                     putBetWithServer(userBet);
                                 }}

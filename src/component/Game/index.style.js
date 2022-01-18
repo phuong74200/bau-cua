@@ -1,3 +1,4 @@
+import { down } from 'styled-breakpoints';
 import styled from 'styled-components';
 
 const Game = styled.div`
@@ -26,6 +27,11 @@ const Footer = styled.div`
     align-items: center;
     gap: 10px;
     z-index: 1;
+
+    min-width: 992px;
+    ${down('md')} {
+        min-width: 100%;
+    }
 `;
 
 const View = styled.div`
@@ -75,6 +81,7 @@ const TextField = styled.div`
         left: 8px;
         padding: 0px 8px;
         font-size: 1.1rem;
+        min-width: 50px;
     }
 
     &:hover {
@@ -154,7 +161,8 @@ const MiniBtn = styled.div`
     height: 100%;
     gap: 1px;
     color: white;
-    cursor: pointer;
+    cursor: ${({ isConfirm }) => (isConfirm ? 'not-allowed' : 'pointer')};
+    opacity: ${({ isConfirm }) => (isConfirm ? 0.5 : 1)};
 `;
 
 const CenterIcon = styled.div`
