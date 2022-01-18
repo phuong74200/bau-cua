@@ -202,13 +202,15 @@ const Game = () => {
             }
             if (TYPE === 'roll' && searchParams.get('roomID') === message.data.room) {
                 const data = message.data;
+                kick(data.rollResult);
                 setConfirm(false);
                 localStorage.setItem('rollResult', JSON.stringify(data.rollResult));
                 tagsData.forEach((state) => {
                     state[1]({});
                 });
+                setUserBet([0, 0, 0, 0, 0, 0]);
                 closeDialog();
-                kick(data.rollResult);
+                setResultData([]);
             }
         };
         socket.on('events', listener);
@@ -287,6 +289,7 @@ const Game = () => {
     const moveToRoom = () => {
         localStorage.removeItem('roomID');
         localStorage.removeItem('roomName');
+        setResultData([]);
         navigateTo('/room');
     };
 
