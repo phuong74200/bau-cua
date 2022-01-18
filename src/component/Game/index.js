@@ -40,6 +40,7 @@ const Game = () => {
 
     const [resultData, setResultData] = useState([]);
     const [userBet, setUserBet] = useState([0, 0, 0, 0, 0, 0]);
+    const [roomData, setRoomData] = useState();
 
     const [isShowing, toggle, openDialog, closeDialog] = useDialog(false);
     const handleCloseResultDialog = () => {
@@ -83,6 +84,16 @@ const Game = () => {
                 setGold(data.coin);
                 setName(data.name);
                 setRole(data.role);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        _axios
+            .get(`/room/${searchParams.get('roomID')}`)
+            .then((res) => {
+                const data = res.data.data;
+                setRoomData(data);
             })
             .catch((error) => {
                 console.log(error);
@@ -257,7 +268,7 @@ const Game = () => {
         navigator.clipboard.writeText(searchParams.get('roomID'));
     };
 
-    const logout = () => {
+    const moveToRoom = () => {
         localStorage.removeItem('roomID');
         localStorage.removeItem('roomName');
         navigateTo('/room');
@@ -272,6 +283,8 @@ const Game = () => {
             }]`;
         else return '';
     };
+
+    console.log('RoomData', roomData);
 
     return (
         <Styled.Game>
@@ -311,7 +324,7 @@ const Game = () => {
                                 </Styled.TextField>
                             ) : (
                                 <Styled.TextField name="Phòng" readonly editable>
-                                    {localStorage.getItem('roomName')}
+                                    {roomData ? roomData.name : ''}
                                 </Styled.TextField>
                             )}
 
@@ -390,7 +403,7 @@ const Game = () => {
                             ) : null}
                             <Styled.MiniBtn
                                 clickable
-                                onClick={() => logout()}
+                                onClick={() => moveToRoom()}
                                 style={{
                                     marginTop: 'auto',
                                 }}
