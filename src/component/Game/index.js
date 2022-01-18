@@ -135,7 +135,7 @@ const Game = () => {
                 setUserBet(new Array(6).fill(0));
             })
             .catch((e) => {
-                toast.error('Không thể đặt cược');
+                toast.error('Không thể đặt cược, bạn chỉ có thể đặt cược 1 lần trong 1 lượt chơi.');
                 const sum = userBet.reduce((pre, cur) => pre + cur, 0);
                 setUserBet(new Array(6).fill(0));
                 setGold(() => gold + sum);
@@ -170,6 +170,7 @@ const Game = () => {
                 tagsData.forEach((state) => {
                     state[1]({});
                 });
+                closeDialog();
                 kick(data.rollResult);
             }
         };
@@ -212,20 +213,22 @@ const Game = () => {
                     setGold(data.coin);
                     setName(data.name);
                     setRole(data.role);
+
+                    openDialog();
                     setResultData(
                         getResultBet(
                             JSON.parse(localStorage.getItem('rollResult')),
                             JSON.parse(localStorage.getItem('userBet'))
                         )
                     );
-                    openDialog();
+
                     setUserBet([0, 0, 0, 0, 0, 0]);
                     tagsData.forEach((state) => {
                         state[1]({});
                     });
                 })
                 // eslint-disable-next-line prettier/prettier
-                .catch((error) => { });
+                .catch((error) => {});
             setRoll(false);
         }, 10000);
         setTimeout(() => {
@@ -246,18 +249,20 @@ const Game = () => {
         navigateTo('/room');
     };
 
+    const getTitle = () => {
+        const result = JSON.parse(localStorage.getItem('rollResult'));
+        if (result)
+            return `[Kết quả: ${labelList[result[0]]}, ${labelList[result[1]]}, ${
+                labelList[result[2]]
+            }]`;
+        else return '';
+    };
+
     return (
         <Styled.Game>
             <RollStage isShow={isRoll} diceFace={diceFace} />
             <Ranking isShow={isRank} roomID={searchParams.get('roomID')} setRank={setRank} />
-            <Dialog
-                title={() => {
-                    const result = JSON.parse(localStorage.getItem('rollResult'));
-                    result ? `[Kết quả: ${result[0]}, ${result[1]}, ${result[2]}]` : '';
-                }}
-                isShowing={isShowing}
-                hide={handleCloseResultDialog}
-            >
+            <Dialog title={getTitle()} isShowing={isShowing} hide={handleCloseResultDialog}>
                 <ResultDialog resultData={resultData} />
             </Dialog>
             <Styled.FixLayer>

@@ -11,8 +11,13 @@ const Game = styled.div`
 `;
 
 const Container = styled.div`
-    display: grid;
+    /* display: grid;
     grid-template-rows: 50px 1fr 50px;
+    grid-template-columns: 1fr;
+    gap: 10px; */
+
+    display: grid;
+    grid-template-rows: 50px 1fr;
     grid-template-columns: 1fr;
     gap: 10px;
 `;
@@ -26,6 +31,8 @@ const Footer = styled.div`
     align-items: center;
     gap: 10px;
     z-index: 1;
+
+    min-width: 992px;
 `;
 
 const View = styled.div`
