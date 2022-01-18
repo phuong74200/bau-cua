@@ -5,29 +5,39 @@ import axios from 'axios';
 import { Success, Error } from '../../../helpers/notify';
 import * as CONFIG from '../config';
 
-const _axios = axios.create({
-    baseURL: CONFIG.BE_URL,
-    timeout: 1000,
-    headers: {
-        Authorization: 'Bearer ' + localStorage.getItem('token'),
-    },
-});
-
 const rollGame = (roomID, cb = () => {}) => {
-    _axios
-        .post(`/room/${roomID}/roll`, {
-            id: roomID,
-        })
+    axios
+        .post(
+            `${CONFIG.BE_URL}/room/${roomID}/roll`,
+            {
+                id: roomID,
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + localStorage.getItem('token'),
+                },
+            }
+        )
         .then((res) => {
             cb(res);
         });
 };
 
 const resetGame = (roomID, cb = () => {}) => {
-    _axios
-        .post(`/room/${roomID}/reset`, {
-            id: roomID,
-        })
+    axios
+        .post(
+            `${CONFIG.BE_URL}/room/${roomID}/reset`,
+            {
+                id: roomID,
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + localStorage.getItem('token'),
+                },
+            }
+        )
         .then((res) => {
             cb(res);
             Success('Reset game thành công.');

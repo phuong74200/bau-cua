@@ -59,15 +59,6 @@ const Game = () => {
         useState({}),
     ];
 
-    const _axios = axios.create({
-        baseURL: CONFIG.BE_URL,
-        timeout: 1000,
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + localStorage.getItem('token'),
-        },
-    });
-
     const [gold, setGold] = useState(0);
     const [name, setName] = useState('username');
     const [role, setRole] = useState('user');
@@ -77,8 +68,13 @@ const Game = () => {
     const [isConfirm, setConfirm] = useState(false);
 
     useEffect(() => {
-        _axios
-            .get('/user')
+        axios
+            .get(`${CONFIG.BE_URL}/user`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + localStorage.getItem('token'),
+                },
+            })
             .then((res) => {
                 const data = res.data.data;
                 setGold(data.coin);
@@ -138,11 +134,15 @@ const Game = () => {
     };
 
     const putBetWithServer = (userBet) => {
-        _axios
+        axios
             .post(
-                `/room/${searchParams.get('roomID')}/bet`,
+                `${CONFIG.BE_URL}/room/${searchParams.get('roomID')}/bet`,
                 {
                     bet: userBet,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: 'Bearer ' + localStorage.getItem('token'),
+                    },
                 },
                 {
                     headers: {
@@ -232,8 +232,13 @@ const Game = () => {
 
         setTimeout(() => {
             const preCoin = gold;
-            _axios
-                .get('/user')
+            axios
+                .get(`${CONFIG.BE_URL}/user`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: 'Bearer ' + localStorage.getItem('token'),
+                    },
+                })
                 .then((res) => {
                     const data = res.data.data;
                     openDialog();

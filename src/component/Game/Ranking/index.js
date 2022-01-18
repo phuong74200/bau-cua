@@ -12,17 +12,23 @@ const Ranking = ({ isShow, roomID, setRank }) => {
     const [list, setList] = useState([]);
 
     useEffect(() => {
-        const _axios = axios.create({
-            baseURL: CONFIG.BE_URL,
-            timeout: 1000,
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: 'Bearer ' + localStorage.getItem('token'),
-            },
-        });
-        _axios.post(`/room/${roomID}/get-rank`, { id: roomID }).then((res) => {
-            setList(res.data.data);
-        });
+        axios
+            .post(
+                `${CONFIG.BE_URL}/room/${roomID}/get-rank`,
+                {
+                    id: roomID,
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: 'Bearer ' + localStorage.getItem('token'),
+                    },
+                }
+            )
+            .then((res) => {
+                setList(res.data.data);
+            })
+            .catch((e) => {});
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isShow]);
 
