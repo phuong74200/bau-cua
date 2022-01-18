@@ -3,6 +3,7 @@ import React from 'react';
 import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
 
+import { Success } from '../../../helpers/notify';
 import * as CONFIG from '../config';
 
 const _axios = axios.create({
@@ -30,6 +31,7 @@ const resetGame = (roomID, cb = () => {}) => {
         })
         .then((res) => {
             cb(res);
+            Success('Reset game thành công.');
         });
 };
 
