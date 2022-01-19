@@ -12,6 +12,7 @@ const rollGame = (roomID, cb = () => { }) => {
             `${CONFIG.BE_URL}/room/${roomID}/roll`,
             {
                 id: roomID,
+                timeout: 200,
             },
             {
                 headers: {
@@ -37,6 +38,7 @@ const resetGame = (roomID, cb = () => { }) => {
             `${CONFIG.BE_URL}/room/${roomID}/reset`,
             {
                 id: roomID,
+                timeout: 200,
             },
             {
                 headers: {
