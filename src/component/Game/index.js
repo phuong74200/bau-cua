@@ -166,7 +166,7 @@ const Game = () => {
                     },
                 }
             )
-            .then((res) => {
+            .then(() => {
                 Success('Đặt cược thành công!');
                 setConfirm(true);
                 localStorage.setItem('userBet', JSON.stringify(userBet));
@@ -176,9 +176,9 @@ const Game = () => {
                 toast.error(
                     'Không thể đặt cược hoặc bạn chỉ có thể đặt cược 1 lần trong 1 lượt chơi.'
                 );
-                const sum = userBet.reduce((pre, cur) => pre + cur, 0);
-                setUserBet(new Array(6).fill(0));
-                setGold(() => gold + sum);
+                // const sum = userBet.reduce((pre, cur) => pre + cur, 0);
+                // setUserBet(new Array(6).fill(0));
+                // setGold(() => gold + sum);
                 const data = e.response.data;
                 if (
                     e.response.status === 400 &&
@@ -188,7 +188,7 @@ const Game = () => {
                     Error('Bạn hãy tham gia phòng để bắt đầu trò chơi.');
                     navigateTo('/room');
                 }
-                if (error.response && error.response.status == 401) {
+                if (e.response && e.response.status == 401) {
                     navigateTo('/login');
                 }
             });

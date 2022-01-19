@@ -1,5 +1,5 @@
 import { down } from 'styled-breakpoints';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 const Game = styled.div`
     width: auto;
