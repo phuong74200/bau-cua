@@ -1,5 +1,5 @@
 export default {
-    backendURL: 'https://api.ohtgo.me/',
+    backendURL: 'https://apibaucua.f-code.tech/',
     firebaseConfig: {
         apiKey: 'AIzaSyBJ85ixLJSfvKfzKEobXgTDBg8Dfxn2fSI',
         authDomain: 'baucua-fcode.firebaseapp.com',
