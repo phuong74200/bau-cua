@@ -98,7 +98,6 @@ const Game = () => {
             .then((res) => {
                 const data = res.data.data;
                 setRoomData(data);
-                console.log('data', data);
             })
             .catch((error) => {
                 console.log(error);
