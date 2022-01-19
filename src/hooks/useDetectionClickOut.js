@@ -3,7 +3,6 @@ import { useEffect } from 'react';
 
 function useDetectClickOutside(ref, handleCloseHistoryDropBar) {
     useEffect(() => {
-        console.log('Ref: ', ref);
         function handleClickOutside(event) {
             if (ref.current && !ref.current.contains(event.target)) {
                 handleCloseHistoryDropBar();
