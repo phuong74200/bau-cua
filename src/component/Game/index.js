@@ -276,6 +276,8 @@ const Game = () => {
                     tagsData.forEach((state) => {
                         state[1]({});
                     });
+                    localStorage.removeItem('userBet');
+                    localStorage.removeItem('rollResult');
                 })
                 // eslint-disable-next-line prettier/prettier
                 .catch((error) => {
@@ -309,7 +311,9 @@ const Game = () => {
         const result = JSON.parse(localStorage.getItem('rollResult'));
         if (result)
             // eslint-disable-next-line prettier/prettier
-            return `[Kết quả: ${labelList[result[0]]}, ${labelList[result[1]]}, ${labelList[result[2]]}]`;
+            return `[Kết quả: ${labelList[result[0]]}, ${labelList[result[1]]}, ${
+                labelList[result[2]]
+            }]`;
         else return '';
     };
 
