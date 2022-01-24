@@ -210,7 +210,6 @@ const Game = () => {
             if (TYPE === 'roll' && searchParams.get('roomID') === message.data.room) {
                 const data = message.data;
                 kick(data.rollResult);
-                setConfirm(false);
                 localStorage.setItem('rollResult', JSON.stringify(data.rollResult));
                 tagsData.forEach((state) => {
                     state[1]({});
@@ -285,6 +284,7 @@ const Game = () => {
                     }
                 });
             setRoll(false);
+            setConfirm(false);
         }, 10000);
         setTimeout(() => {
             setDiceFace([
