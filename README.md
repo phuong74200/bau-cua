@@ -9,12 +9,14 @@ Back-end repository: <a href="https://github.com/oHTGo/F-BauCua">Github</a>
 <p>GameBoard</p>
 <img src="./.github/in-game.jpeg" alt="in-game image"/>
 <p>Faecbook livestream</p>
-<img src="./.github/livestream.jpg" alt="in-game image"/>
+<img src="./.github/livestream.jpg" alt="livestream"/>
+<p>Login screen</p>
+<img src="./.github/login.jpeg" alt="login"/>
 <h2>Tech</h2>
 <ul>
     <li>ReactJS: create the UI</li>
     <li>Socket.io: realtime betting</li>
-    <li>Firebase: for the login, Google OAuth2</li>
+    <li>Firebase: for the login</li>
 </ul>
 <h2>Features</h2>
 <ul>
